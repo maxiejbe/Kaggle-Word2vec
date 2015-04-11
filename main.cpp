@@ -1,7 +1,6 @@
-#include <iostream>
-#include <string>
 #include <fstream>
 #include <sstream>
+#include "include/StringCleaner.h"
 
 using namespace std;
 
@@ -16,6 +15,7 @@ int main()
     }
     else
     {
+        getline(readFile,line, '\n');
         while(getline(readFile,line))
         {
             if(firstLine)
@@ -27,9 +27,10 @@ int main()
             getline(iss, id, '\t');
             getline(iss, sentiment, '\t');
             getline(iss, review, '\n');
+            StringCleaner::CleanNonLetters(&review);
             cout << id << endl ;
             cout << sentiment << endl ;
-            cout << review << endl ;
+            //cout << &review << endl ;
             getchar();
         }
         readFile.close();
