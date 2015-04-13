@@ -1,0 +1,31 @@
+*pararse sobre carpeta en la que se quiere crear el repo*
+git init
+git remote add origin <gitrepo>
+git pull origin master
+
+*actualizar los submodules de nuestro proyecto*
+git submodule init
+git submodule update
+
+cd boost
+*actualizar los submodules de boost*
+git submodule init
+git submodule update
+
+*buildear boost, gracias http://stackoverflow.com/questions/13256788/building-boost-1-52-with-mingw/13257930#13257930*
+bootstrap mingw
+.\b2.exe toolset=gcc
+
+*agregar configuración en codeblocks: linkear search directory + librerías que usemos de boost*
+Settings->Compiler->Tab Search Directories->Tab Compiler 
+Agregar variable global $(#boost)
+Setear la variable a "proyecto/boost"
+
+Settings->Compiler->Tab Search Directories->Tab Linker
+Agregar ruta a "proyecto/boost/stage/lib"
+
+Settings->Compiler->Tab Linker Settings->Sección link libraries
+Agregar librerías que vamos a usar de "proyecto/boost/stage/lib"
+En nuestro caso y por ahora, las dos de regex
+
+

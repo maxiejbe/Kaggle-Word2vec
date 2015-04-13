@@ -30,7 +30,7 @@ int main()
             StringCleaner::CleanNonLetters(&review);
             cout << id << endl ;
             cout << sentiment << endl ;
-            //cout << &review << endl ;
+            cout << review << endl ;
             getchar();
         }
         readFile.close();

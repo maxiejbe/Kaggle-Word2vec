@@ -1,8 +1,8 @@
 #ifndef STRINGCLEANER_H
 #define STRINGCLEANER_H
 #include <string>
-#include <regex>
 #include <iostream>
+#include <boost/regex.hpp>
 
 class StringCleaner
 {

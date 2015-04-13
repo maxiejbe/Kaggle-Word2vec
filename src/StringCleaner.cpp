@@ -1,6 +1,7 @@
 #include "StringCleaner.h"
 
 using namespace std;
+using namespace boost;
 
 StringCleaner::StringCleaner()
 {
@@ -12,26 +13,19 @@ StringCleaner::~StringCleaner()
     //dtor
 }
 
-void StringCleaner::CleanHTML(std::string* toClean)
+void StringCleaner::CleanHTML(string* toClean)
 {
 
 }
 
-void StringCleaner::CleanNonLetters(std::string* toClean)
+void StringCleaner::CleanNonLetters(string* toClean)
 {
-    try
-    {
-        //std::regex lettersRegex("[^A-Za-z\s]");
-        std::cout << *(toClean) << std::endl;
-        //*toClean = std::regex_replace(*toClean, lettersRegex, std::string(""));
-    }
-    catch (std::regex_error& e) {
-        // Syntax error in the regular expression
-        std::cout << e.code() << std::endl;
-    }
+    regex lettersRegex("[^A-Za-z\s]");
+    cout << *(toClean) << endl;
+    *toClean = regex_replace(*toClean, lettersRegex, string(" "));
 }
 
-void StringCleaner::ToLowerCase(std::string* toClean)
+void StringCleaner::ToLowerCase(string* toClean)
 {
 
 }
