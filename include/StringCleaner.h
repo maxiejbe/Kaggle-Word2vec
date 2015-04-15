@@ -3,14 +3,16 @@
 #include <string>
 #include <iostream>
 #include <boost/regex.hpp>
+#include <boost/algorithm/string.hpp>
 
 class StringCleaner
 {
     public:
         StringCleaner();
-        void CleanHTML(std::string* toClean);
+        static void CleanHTML(std::string* toClean);
+        static void CollapseWhiteSpaces(std::string* toClean);
         static void CleanNonLetters(std::string* toClean);
-        void ToLowerCase(std::string* toClean);
+        static void ToLowerCase(std::string* toClean);
         virtual ~StringCleaner();
     protected:
     private:

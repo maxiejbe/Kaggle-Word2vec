@@ -27,7 +27,10 @@ int main()
             getline(iss, id, '\t');
             getline(iss, sentiment, '\t');
             getline(iss, review, '\n');
+            StringCleaner::CleanHTML(&review);
             StringCleaner::CleanNonLetters(&review);
+            StringCleaner::CollapseWhiteSpaces(&review);
+            StringCleaner::ToLowerCase(&review);
             cout << id << endl ;
             cout << sentiment << endl ;
             cout << review << endl ;
