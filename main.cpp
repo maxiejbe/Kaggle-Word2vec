@@ -1,42 +1,51 @@
-#include <fstream>
-#include <sstream>
 #include "include/StringCleaner.h"
+#include "include/UnlabeledReview.h"
+#include "include/LabeledReview.h"
 
 using namespace std;
 
-int main()
-{
-    ifstream readFile("data/labeledTrainData.tsv");
-    string id, review, sentiment, line;
-    bool firstLine = true;
-
-    if(!readFile.is_open() ){
-        cout << "Cannot read the file." << endl ;
+void ReadUnlabeledFile(){
+    ifstream unlabeledReadFile("data/unlabeledTrainData.tsv");
+    if(!unlabeledReadFile.is_open() ){
+        cout << "Cannot read the unlabeled train data file." << endl ;
     }
     else
     {
-        getline(readFile,line, '\n');
-        while(getline(readFile,line))
+        UnlabeledReview* unlabeledReview = new UnlabeledReview();
+        //first line discarded, the titles are there
+        while(unlabeledReview->FromFileLine(&unlabeledReadFile))
         {
-            if(firstLine)
-            {
-                firstLine = false;
-                continue;
-            }
-            stringstream iss(line);
-            getline(iss, id, '\t');
-            getline(iss, sentiment, '\t');
-            getline(iss, review, '\n');
-            StringCleaner::CleanHTML(&review);
-            StringCleaner::CleanNonLetters(&review);
-            StringCleaner::CollapseWhiteSpaces(&review);
-            StringCleaner::ToLowerCase(&review);
-            cout << id << endl ;
-            cout << sentiment << endl ;
-            cout << review << endl ;
+            cout << unlabeledReview->GetId() << endl ;
+            cout << unlabeledReview->GetReview() << endl ;
+            //getchar();
+        }
+        unlabeledReadFile.close();
+    }
+}
+
+void ReadLabeledFile(){
+    ifstream labeledReadFile("data/labeledTrainData.tsv");
+    if(!labeledReadFile.is_open() ){
+        cout << "Cannot read the labeled train data file." << endl ;
+    }
+    else
+    {
+        LabeledReview* labeledReview = new LabeledReview();
+        //first line discarded, the titles are there
+        while(labeledReview->FromFileLine(&labeledReadFile))
+        {
+            cout << labeledReview->GetId() << endl ;
+            cout << labeledReview->GetSentiment() << endl ;
+            cout << labeledReview->GetReview() << endl ;
             getchar();
         }
-        readFile.close();
+        labeledReadFile.close();
     }
+}
+
+int main()
+{
+    ReadLabeledFile();
+    ReadUnlabeledFile();
     return 0;
 }
