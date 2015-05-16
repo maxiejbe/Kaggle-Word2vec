@@ -13,6 +13,7 @@ class StringCleaner
         static void CleanHTML(std::string* toClean);
         static void CollapseWhiteSpaces(std::string* toClean);
         static void CleanNonLetters(std::string* toClean);
+        static void CleanApostrophes(std::string* toClean);
         static void ToLowerCase(std::string* toClean);
         virtual ~StringCleaner();
     protected:

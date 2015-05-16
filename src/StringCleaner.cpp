@@ -13,13 +13,6 @@ StringCleaner::~StringCleaner()
     //dtor
 }
 
-void StringCleaner::CompleteClean(string* toClean){
-    CleanHTML(toClean);
-    CleanNonLetters(toClean);
-    ToLowerCase(toClean);
-    CollapseWhiteSpaces(toClean);
-}
-
 void StringCleaner::CleanHTML(string* toClean)
 {
     regex htmlRegex("<[^>]*>");
@@ -34,14 +27,26 @@ void StringCleaner::CollapseWhiteSpaces(string* toClean)
 
 void StringCleaner::CleanNonLetters(string* toClean)
 {
-    regex lettersRegex("[^a-zA-Z0-9]");
+    regex lettersRegex("[^a-zA-Z0-9']");
     *toClean = regex_replace(*toClean, lettersRegex, string(" "));
+}
+
+void StringCleaner::CleanApostrophes(string* toClean){
+    regex lettersRegex("[']");
+    *toClean = regex_replace(*toClean, lettersRegex, string(""));
 }
 
 void StringCleaner::ToLowerCase(string* toClean)
 {
-    cout << *toClean << endl;
     algorithm::to_lower(*toClean);
+}
+
+void StringCleaner::CompleteClean(string* toClean){
+    CleanHTML(toClean);
+    CleanNonLetters(toClean);
+    CleanApostrophes(toClean);
+    ToLowerCase(toClean);
+    CollapseWhiteSpaces(toClean);
 }
 
 
