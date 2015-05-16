@@ -1,4 +1,3 @@
-#include "include/StringCleaner.h"
 #include "include/UnlabeledReview.h"
 #include "include/LabeledReview.h"
 
@@ -12,12 +11,11 @@ void ReadUnlabeledFile(){
     else
     {
         UnlabeledReview* unlabeledReview = new UnlabeledReview();
-        //first line discarded, the titles are there
         while(unlabeledReview->FromFileLine(&unlabeledReadFile))
         {
             cout << unlabeledReview->GetId() << endl ;
             cout << unlabeledReview->GetReview() << endl ;
-            //getchar();
+            getchar();
         }
         unlabeledReadFile.close();
     }
@@ -31,7 +29,6 @@ void ReadLabeledFile(){
     else
     {
         LabeledReview* labeledReview = new LabeledReview();
-        //first line discarded, the titles are there
         while(labeledReview->FromFileLine(&labeledReadFile))
         {
             cout << labeledReview->GetId() << endl ;

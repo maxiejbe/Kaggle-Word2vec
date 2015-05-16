@@ -9,6 +9,7 @@ class StringCleaner
 {
     public:
         StringCleaner();
+        static void CompleteClean(std::string* toClean);
         static void CleanHTML(std::string* toClean);
         static void CollapseWhiteSpaces(std::string* toClean);
         static void CleanNonLetters(std::string* toClean);

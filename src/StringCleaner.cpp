@@ -13,6 +13,13 @@ StringCleaner::~StringCleaner()
     //dtor
 }
 
+void StringCleaner::CompleteClean(string* toClean){
+    CleanHTML(toClean);
+    CleanNonLetters(toClean);
+    ToLowerCase(toClean);
+    CollapseWhiteSpaces(toClean);
+}
+
 void StringCleaner::CleanHTML(string* toClean)
 {
     regex htmlRegex("<[^>]*>");

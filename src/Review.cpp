@@ -1,4 +1,5 @@
 #include "Review.h"
+#include "StringCleaner.h"
 
 using namespace std;
 
@@ -30,6 +31,7 @@ bool Review::FromFileLine(ifstream* str){
         stringstream iss(line);
         if (this->ReadCompleteLine(&iss))
         {
+            //StringCleaner::CompleteClean(&this->review);
             return true;
         }
         str->setstate(std::ios::failbit);
