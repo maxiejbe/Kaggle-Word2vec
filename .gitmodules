@@ -4,3 +4,6 @@
 [submodule "armadillo"]
 	path = armadillo
 	url = https://github.com/lsolanka/armadillo
+[submodule "OpenBLAS"]
+	path = OpenBLAS
+	url = https://github.com/xianyi/OpenBLAS
