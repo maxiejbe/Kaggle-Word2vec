@@ -7,3 +7,6 @@
 [submodule "OpenBLAS"]
 	path = OpenBLAS
 	url = https://github.com/xianyi/OpenBLAS
+[submodule "lapack"]
+	path = lapack
+	url = https://github.com/qsnake/lapack
