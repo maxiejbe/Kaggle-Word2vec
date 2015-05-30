@@ -1,12 +1,3 @@
 [submodule "boost"]
 	path = boost
 	url = https://github.com/boostorg/boost
-[submodule "armadillo"]
-	path = armadillo
-	url = https://github.com/lsolanka/armadillo
-[submodule "OpenBLAS"]
-	path = OpenBLAS
-	url = https://github.com/xianyi/OpenBLAS
-[submodule "lapack"]
-	path = lapack
-	url = https://github.com/qsnake/lapack
