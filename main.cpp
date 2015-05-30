@@ -1,6 +1,5 @@
 #include "include/UnlabeledReview.h"
 #include "include/LabeledReview.h"
-#include "include/Subspaces.h"
 
 using namespace std;
 
@@ -43,13 +42,7 @@ void ReadLabeledFile(){
 
 int main()
 {
-    Subspaces::probarArmadillo();
-
-
-
-
-
-//    ReadLabeledFile();
-//    ReadUnlabeledFile();
+    ReadLabeledFile();
+    ReadUnlabeledFile();
     return 0;
 }
