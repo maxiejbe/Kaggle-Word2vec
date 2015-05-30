@@ -34,16 +34,22 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="include/HashingTrick.h" />
 		<Unit filename="include/LabeledReview.h" />
+		<Unit filename="include/LogisticRegression.h" />
+		<Unit filename="include/Perceptron.h" />
+		<Unit filename="include/PerceptronEntry.h" />
 		<Unit filename="include/Review.h" />
 		<Unit filename="include/StringCleaner.h" />
-		<Unit filename="include/Subspaces.h" />
 		<Unit filename="include/UnlabeledReview.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="src/HashingTrick.cpp" />
 		<Unit filename="src/LabeledReview.cpp" />
+		<Unit filename="src/LogisticRegression.cpp" />
+		<Unit filename="src/Perceptron.cpp" />
+		<Unit filename="src/PerceptronEntry.cpp" />
 		<Unit filename="src/Review.cpp" />
 		<Unit filename="src/StringCleaner.cpp" />
-		<Unit filename="src/Subspaces.cpp" />
 		<Unit filename="src/UnlabeledReview.cpp" />
 		<Extensions>
 			<code_completion />
