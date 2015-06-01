@@ -1,6 +1,6 @@
 #ifndef PERCEPTRON_H
 #define PERCEPTRON_H
-#include "PerceptronEntry.h"
+
 
 #include <vector>
 #include<string>
