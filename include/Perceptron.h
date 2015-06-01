@@ -38,7 +38,7 @@ class Perceptron{
         Perceptron();
         virtual ~Perceptron();
 
-    static vector<double>* trainPerceptron(vector<PerceptronEntry> vectorIn, int dimension);
+    static vector<double> trainPerceptron(vector<PerceptronEntry> vectorIn, int dimension);
     static vector<PerceptronOutput> testPerceptron(vector<double> weights, vector<PerceptronEntry> entryToPredict);
 
     protected:
