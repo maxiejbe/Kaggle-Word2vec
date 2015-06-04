@@ -27,7 +27,6 @@ vector<string> ReadStopWords(){
         }
         labeledReadFile.close();
     }
-
     return stopWords;
 }
 

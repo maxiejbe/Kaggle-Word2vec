@@ -66,20 +66,20 @@ double dotProduct(vector<double> vec1, vector<int> vec2){
     return total;
 }
 
-void updateWeights(vector<double>* weights,int error,PerceptronEntry hashedReview){
+void updateWeights(vector<double>* weights,int error,vector<int> hashedReview){
 
     for (unsigned int i = 0; i<=weights->size()-1; i++){
-        (*weights)[i] = LEARNINGRATE * error * hashedReview.getVectorReview()[i];
+        (*weights)[i] = LEARNINGRATE * error * hashedReview[i];
     }
 
 }
 
 
-vector<double> Perceptron::trainPerceptron(vector<PerceptronEntry> vectorIn, int dimension){
+vector<double> Perceptron::trainPerceptron(vector < tuple < vector<int>,int> > vectorIn, int dimension){//(vector<PerceptronEntry> vectorIn, int dimension){
 
     int vectorDimension = vectorIn.size();
     vector<int> vectorIntAux;
-    PerceptronEntry perceptronEntryAux;
+    tuple<vector<int>, int> tupleAux();
     int resultado=0;
     int error = 0;
     int errorCounter = 0;
@@ -89,19 +89,21 @@ vector<double> Perceptron::trainPerceptron(vector<PerceptronEntry> vectorIn, int
 
     while (true){
         for (int i=0; i <= vectorDimension ; i++){
-            perceptronEntryAux = vectorIn[i];
-            vectorIntAux = perceptronEntryAux.getVectorReview();
+
+            //tupleAux = vectorIn[i];
+            vectorIntAux = get<0>(vectorIn[i]);
+            //vectorIntAux = perceptronEntryAux.getVectorReview();
             dp = dotProduct(weights, vectorIntAux);
-            if (dp>0,5){
+            if (dp > 0.5) {
                 resultado = 1;
             }
             else{
                 resultado = 0;
             };
-            error = perceptronEntryAux.getLabel() - resultado;
+            error = get<1>(vectorIn[i]) - resultado;
                 if (error != 0 ){
                     errorCounter += 1;
-                    updateWeights(&weights, error, perceptronEntryAux);
+                    updateWeights(&weights, error, vectorIntAux);
                 }
         };
         if ((errorCounter==0) or (loopCounter == MAXLOOP)){

@@ -2,10 +2,12 @@
 #define PERCEPTRON_H
 
 
-#include <vector>
+#include<vector>
 #include<string>
+#include"boost/tuple/tuple.hpp"
 
 using namespace std;
+using namespace boost;
 
 
 
@@ -42,8 +44,8 @@ class Perceptron{
     public:
         Perceptron();
         virtual ~Perceptron();
-
-    static vector<double> trainPerceptron(vector<PerceptronEntry> vectorIn, int dimension);
+    static vector<double> trainPerceptron(vector < tuple < vector<int>,int> > vectorIn, int dimension);
+    //static vector<double> trainPerceptron(vector<PerceptronEntry> vectorIn, int dimension);
     static vector<PerceptronOutput> testPerceptron(vector<double> weights, vector<PerceptronEntry> entryToPredict);
 
     protected:
