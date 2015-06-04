@@ -113,9 +113,12 @@ vector<double> Perceptron::trainPerceptron(vector < tuple < vector<int>,int> > v
 return weights;
 }
 
-vector<PerceptronOutput> testPerceptron(vector<double> weights, vector<PerceptronEntry> entryToPredict){
+vector<tuple<string, double> > testPerceptron(vector<double> weights, vector < tuple < vector<int>,string> > entryToPredict){
+//vector<PerceptronOutput> testPerceptron(vector<double> weights, vector<PerceptronEntry> entryToPredict){
 
-    vector<PerceptronOutput> returnVector(weights.size());
+    vector<PerceptronOutput> auxVectorOfOutput(weights.size());
+    vector<tuple<string, double> > vectorToReturn(weights.size());
+    tuple<string, double> tupleAux;
     PerceptronOutput pOutputAux;
     double dp = 0;
     double dpMax = 0;
@@ -123,20 +126,27 @@ vector<PerceptronOutput> testPerceptron(vector<double> weights, vector<Perceptro
     double probabilityAux = 0;
 
     for (unsigned int i=0;i<=weights.size()-1;i++){
-        dp = dotProduct(weights, entryToPredict[i].getVectorReview());
+        //calculo producto entre weights y la entrada
+        dp = dotProduct(weights, get<0>(entryToPredict[i]));
+
         if (dp>dpMax) dpMax=dp;
         if (dp<dpMin) dpMin=dp;
+
         pOutputAux.setProduct(dp);
-        pOutputAux.setMovieID(entryToPredict[i].getMovieID());
-        returnVector[i] = pOutputAux;
+        pOutputAux.setMovieID(get<1>(entryToPredict[i]));
+        auxVectorOfOutput[i] = pOutputAux;
     }
 
     for (unsigned int j=0;j<=entryToPredict.size()-1;j++){
         //normalizo distancia
-        probabilityAux = ((returnVector[j].getProduct() - dpMin) / (dpMax-dpMin));
-        returnVector[j].setProbability(probabilityAux);
+
+        probabilityAux = ((auxVectorOfOutput[j].getProduct() - dpMin) / (dpMax-dpMin));
+
+        vectorToReturn[j] = make_tuple(auxVectorOfOutput[j].getMovieID(), probabilityAux);
+
     }
-return returnVector;
+
+return vectorToReturn;
 }
 
 
