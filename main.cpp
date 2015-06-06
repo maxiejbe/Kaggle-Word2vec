@@ -27,7 +27,6 @@ vector<string> ReadStopWords(){
         }
         labeledReadFile.close();
     }
-
     return stopWords;
 }
 
@@ -61,6 +60,8 @@ list<tuple<vector<string>, string> > ReadLabeledFile(){
     return labeledReviews;
 }
 
+
+
 int main()
 {
     list<tuple<vector<string>, string> > labeledReviews = ReadLabeledFile();
@@ -78,6 +79,7 @@ int main()
 
     return 0;
 }
+
 
 void ReadUnlabeledFile(){
     ifstream unlabeledReadFile("data/unlabeledTrainData.tsv");

@@ -2,10 +2,12 @@
 #define PERCEPTRON_H
 
 
-#include <vector>
+#include<vector>
 #include<string>
+#include"boost/tuple/tuple.hpp"
 
 using namespace std;
+using namespace boost;
 
 
 
@@ -42,10 +44,12 @@ class Perceptron{
     public:
         Perceptron();
         virtual ~Perceptron();
-
-    static vector<double> trainPerceptron(vector<PerceptronEntry> vectorIn, int dimension);
-    static vector<PerceptronOutput> testPerceptron(vector<double> weights, vector<PerceptronEntry> entryToPredict);
-
+        //Toma un vector de tuplas que en el primer campo tiene la review hasheada con hashingTrick y en el otro su label de opinion positiva o negativa
+        //Deuvlve un vector de double que representa la "pendiente" de la recta que crea perceptron para dividir el espacio.
+        static vector<double> trainPerceptron(vector < tuple < vector<int>,int> > vectorIn, int dimension);
+        //Toma un vector de tuplas que en el primer campo tiene la review hasheada con hashingTrick y en el otro un string con su ID correspondiente.
+        //Devuelve un vector de Tuplas que representa el primer campo el ID y el segundo la probabilidad.
+        static vector<tuple<string, double> > testPerceptron(vector<double> weights, vector < tuple < vector<int>,string> > entryToPredict);
     protected:
     private:
 
