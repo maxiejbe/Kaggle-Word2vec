@@ -4,12 +4,13 @@
 #include <boost/algorithm/string.hpp>
 #include "boost/tuple/tuple.hpp"
 #include <list>
+#include <map>
 
 using namespace std;
 using namespace boost;
 
-vector<string> ReadStopWords(){
-    vector<string> stopWords;
+map<string, int> ReadStopWords(){
+    map<string, int> stopWords;
 
     ifstream labeledReadFile("data/stopwords.txt");
     if(!labeledReadFile.is_open() ){
@@ -23,7 +24,7 @@ vector<string> ReadStopWords(){
             std::istringstream iss(line);
             string word;
             if (!(iss >> word)) { break; }
-            stopWords.push_back(word);
+            stopWords[word] = 1;
         }
         labeledReadFile.close();
     }
@@ -34,7 +35,7 @@ list<tuple<vector<string>, string> > ReadLabeledFile(){
     list<tuple<vector<string>, string> > labeledReviews;
     LabeledReview labeledReview;
 
-    vector<string> stopWords = ReadStopWords();
+    map<string, int> stopWords = ReadStopWords();
 
     ifstream labeledReadFile("data/labeledTrainDataTest.tsv");
     if(!labeledReadFile.is_open() ){
@@ -49,9 +50,13 @@ list<tuple<vector<string>, string> > ReadLabeledFile(){
             string reviewString = labeledReview.GetReview();
             boost::split(reviewVector,reviewString,boost::is_any_of(" "));
 
-            //TODO: Diff between reviewVector and stopWords and generate the tuple
-
-            tuple<vector<string>, string> labeledReviewTuple = make_tuple(reviewVector, labeledReview.GetSentiment());
+            //Diff between reviewVector and stopWords and generate the tuple
+            vector<string> cleanedVector;
+            for (vector<string>::iterator it = reviewVector.begin(); it != reviewVector.end(); ++it){
+                if(stopWords[(*it)] == 1) continue;
+                cleanedVector.push_back(*it);
+            }
+            tuple<vector<string>, string> labeledReviewTuple = make_tuple(cleanedVector, labeledReview.GetSentiment());
 
             labeledReviews.push_back(labeledReviewTuple);
         }
@@ -66,7 +71,7 @@ int main()
 {
     list<tuple<vector<string>, string> > labeledReviews = ReadLabeledFile();
 
-    list<tuple<vector<string>, string> >::iterator reviewIterator;
+    list<tuple<vector<string>, string> >::iterator reviewedIterator;
     for (reviewedIterator=labeledReviews.begin(); reviewedIterator!=labeledReviews.end(); ++reviewedIterator){
 
         for (vector<string>::iterator it = get<0>(*reviewedIterator).begin(); it != get<0>(*reviewedIterator).end(); ++it)
