@@ -65,7 +65,8 @@ int main()
 {
     list<tuple<vector<string>, string> > labeledReviews = ReadLabeledFile();
 
-    for (list<tuple<vector<string>, string> >::iterator reviewedIterator=labeledReviews.begin(); reviewedIterator!=labeledReviews.end(); ++reviewedIterator){
+    list<tuple<vector<string>, string> >::iterator reviewIterator;
+    for (reviewedIterator=labeledReviews.begin(); reviewedIterator!=labeledReviews.end(); ++reviewedIterator){
 
         for (vector<string>::iterator it = get<0>(*reviewedIterator).begin(); it != get<0>(*reviewedIterator).end(); ++it)
         {
