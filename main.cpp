@@ -1,15 +1,19 @@
+#include <cstdlib>
 #include "include/UnlabeledReview.h"
 #include "include/LabeledReview.h"
 #include "include/Perceptron.h"
+#include "include/HashingTrick.h"
 #include <boost/algorithm/string.hpp>
 #include "boost/tuple/tuple.hpp"
+#include "boost/lexical_cast.hpp"
 #include <list>
+#include <map>
 
 using namespace std;
 using namespace boost;
 
-vector<string> ReadStopWords(){
-    vector<string> stopWords;
+map<string, int> ReadStopWords(){
+    map<string, int> stopWords;
 
     ifstream labeledReadFile("data/stopwords.txt");
     if(!labeledReadFile.is_open() ){
@@ -23,18 +27,18 @@ vector<string> ReadStopWords(){
             std::istringstream iss(line);
             string word;
             if (!(iss >> word)) { break; }
-            stopWords.push_back(word);
+            stopWords[word] = 1;
         }
         labeledReadFile.close();
     }
     return stopWords;
 }
 
-list<tuple<vector<string>, string> > ReadLabeledFile(){
-    list<tuple<vector<string>, string> > labeledReviews;
+vector<tuple<vector<int>, int> > ReadLabeledFile(int dimensions){
+    vector<tuple<vector<int>, int> > labeledReviews;
     LabeledReview labeledReview;
 
-    vector<string> stopWords = ReadStopWords();
+    map<string, int> stopWords = ReadStopWords();
 
     ifstream labeledReadFile("data/labeledTrainDataTest.tsv");
     if(!labeledReadFile.is_open() ){
@@ -42,33 +46,55 @@ list<tuple<vector<string>, string> > ReadLabeledFile(){
     }
     else
     {
+        HashingTrick* hashingTrick = new HashingTrick(dimensions);
+
+        bool firstElement = true;
         while(labeledReview.FromFileLine(&labeledReadFile))
         {
+            if(firstElement){
+                firstElement = false;
+                continue;
+            }
             //let me explain myself, I need to get a vector of words + sentiment as a tuple
             vector<string> reviewVector;
             string reviewString = labeledReview.GetReview();
             boost::split(reviewVector,reviewString,boost::is_any_of(" "));
 
-            //TODO: Diff between reviewVector and stopWords and generate the tuple
-
-            tuple<vector<string>, string> labeledReviewTuple = make_tuple(reviewVector, labeledReview.GetSentiment());
-
+            //Diff between reviewVector and stopWords and generate the tuple
+            vector<string> cleanedVector;
+            for (vector<string>::iterator it = reviewVector.begin(); it != reviewVector.end(); ++it){
+                if(stopWords[(*it)] == 1) continue;
+                cleanedVector.push_back(*it);
+            }
+            vector<int> hashedReview = hashingTrick->Hash(cleanedVector);
+            tuple<vector<int>, int> labeledReviewTuple = make_tuple(hashedReview, lexical_cast<int>(labeledReview.GetSentiment()));
             labeledReviews.push_back(labeledReviewTuple);
         }
+
+        delete hashingTrick;
         labeledReadFile.close();
     }
+
+
     return labeledReviews;
 }
 
-
-
 int main()
 {
-    list<tuple<vector<string>, string> > labeledReviews = ReadLabeledFile();
+    int dimensions = 200;
 
-    for (list<tuple<vector<string>, string> >::iterator reviewedIterator=labeledReviews.begin(); reviewedIterator!=labeledReviews.end(); ++reviewedIterator){
+    vector<tuple<vector<int>, int> > labeledReviews = ReadLabeledFile(dimensions);
 
-        for (vector<string>::iterator it = get<0>(*reviewedIterator).begin(); it != get<0>(*reviewedIterator).end(); ++it)
+    vector<double> percentronWeights = Perceptron::trainPerceptron(labeledReviews, dimensions);
+    for (vector<double>::iterator it=percentronWeights.begin(); it!=percentronWeights.end(); ++it){
+        cout << *it << endl;
+        getchar();
+    }
+
+    vector<tuple<vector<int>, int> >::iterator reviewedIterator;
+    for (reviewedIterator=labeledReviews.begin(); reviewedIterator!=labeledReviews.end(); ++reviewedIterator){
+
+        for (vector<int>::iterator it = get<0>(*reviewedIterator).begin(); it != get<0>(*reviewedIterator).end(); ++it)
         {
             cout << *it << endl;
         }

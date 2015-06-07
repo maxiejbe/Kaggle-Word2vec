@@ -3,7 +3,11 @@
 
 #include <vector>
 #include <string>
-
+#include "boost/mpl/modulus.hpp"
+#include <boost/functional/hash.hpp>
+#include "boost/limits.hpp"
+#include <boost/numeric/conversion/cast.hpp>
+#include <iostream>
 
 class HashingTrick
 {
@@ -13,6 +17,7 @@ class HashingTrick
         virtual ~HashingTrick();
     protected:
     private:
+        int dimensions;
 };
 
 #endif // HASHINGTRICK_H
