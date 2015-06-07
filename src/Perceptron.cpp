@@ -60,14 +60,14 @@ vector<double> Perceptron::trainPerceptron(vector<tuple<vector<int>,int> > revie
                 resultado = 0;
             };
             error = get<1>(reviews[i]) - resultado;
-                if (error != 0 ){
-                    errorCounter += 1;
-                    updateWeights(&weights, error, vectorIntAux);
-                }
-        };
+            if (error != 0 ){
+                errorCounter += 1;
+                updateWeights(&weights, error, vectorIntAux);
+            }
+        }
         if ((errorCounter==0) or (loopCounter == MAXLOOP)){
             break;
-        };
+        }
     }
     return weights;
 }
