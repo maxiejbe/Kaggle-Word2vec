@@ -85,11 +85,11 @@ int main()
 
     vector<tuple<vector<int>, int> > labeledReviews = ReadLabeledFile(dimensions);
 
-    /*vector<double> percentronWeights = Perceptron::trainPerceptron(labeledReviews, dimensions);
+    vector<double> percentronWeights = Perceptron::trainPerceptron(labeledReviews, dimensions);
     for (vector<double>::iterator it=percentronWeights.begin(); it!=percentronWeights.end(); ++it){
         cout << *it << endl;
         getchar();
-    }*/
+    }
 
     vector<tuple<vector<int>, int> >::iterator reviewedIterator;
     for (reviewedIterator=labeledReviews.begin(); reviewedIterator!=labeledReviews.end(); ++reviewedIterator){

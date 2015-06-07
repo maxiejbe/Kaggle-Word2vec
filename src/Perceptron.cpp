@@ -1,10 +1,10 @@
 #include "Perceptron.h"
 
 using namespace std;
+using namespace boost;
 
 const double LEARNINGRATE = 0.05;
 const int MAXLOOP = 50;
-
 
 Perceptron::Perceptron()
 {
@@ -14,44 +14,6 @@ Perceptron::Perceptron()
 Perceptron::~Perceptron()
 {
     //dtor
-}
-
-void PerceptronEntry::setVectorReview(vector<int> vectorReviewIn){
-    this->vectorReview = vectorReviewIn;
-}
-void PerceptronEntry::setLabel(int labelIn){
-    this->label = labelIn;
-}
-vector<int> PerceptronEntry::getVectorReview(){
-
-    return this->vectorReview;
-}
-int PerceptronEntry::getLabel(){
-    return this->label;
-}
-string PerceptronEntry::getMovieID(){
-    return this->movieID;
-}
-void PerceptronOutput::setMovieID(string movieIDIn){
-    this->movieID = movieIDIn;
-}
-void PerceptronEntry::setMovieID(string movieIDIn){
-    this->movieID = movieIDIn;
-}
-void PerceptronOutput::setProbability(double probabilityIn){
-    this->probability = probabilityIn;
-}
-void PerceptronOutput::setProduct(double prob){
-    this->product=prob;
-}
-string PerceptronOutput::getMovieID(){
-    return this->movieID;
-}
-double PerceptronOutput::getProbability(){
-    return this->probability;
-}
-double PerceptronOutput::getProduct(){
-    return this->product;
 }
 
 double dotProduct(vector<double> vec1, vector<int> vec2){
@@ -74,10 +36,9 @@ void updateWeights(vector<double>* weights,int error,vector<int> hashedReview){
 
 }
 
+vector<double> Perceptron::trainPerceptron(vector<tuple<vector<int>,int> > reviews, int dimension){
 
-vector<double> Perceptron::trainPerceptron(vector < tuple < vector<int>,int> > vectorIn, int dimension){//(vector<PerceptronEntry> vectorIn, int dimension){
-
-    int vectorDimension = vectorIn.size();
+    int reviewsCount = reviews.size();
     vector<int> vectorIntAux;
     tuple<vector<int>, int> tupleAux();
     int resultado=0;
@@ -88,11 +49,9 @@ vector<double> Perceptron::trainPerceptron(vector < tuple < vector<int>,int> > v
     vector<double> weights(dimension);
 
     while (true){
-        for (int i=0; i <= vectorDimension ; i++){
+        for (int i=0; i <= reviewsCount ; i++){
 
-            //tupleAux = vectorIn[i];
-            vectorIntAux = get<0>(vectorIn[i]);
-            //vectorIntAux = perceptronEntryAux.getVectorReview();
+            vectorIntAux = get<0>(reviews[i]);
             dp = dotProduct(weights, vectorIntAux);
             if (dp > 0.5) {
                 resultado = 1;
@@ -100,7 +59,7 @@ vector<double> Perceptron::trainPerceptron(vector < tuple < vector<int>,int> > v
             else{
                 resultado = 0;
             };
-            error = get<1>(vectorIn[i]) - resultado;
+            error = get<1>(reviews[i]) - resultado;
                 if (error != 0 ){
                     errorCounter += 1;
                     updateWeights(&weights, error, vectorIntAux);
@@ -110,12 +69,10 @@ vector<double> Perceptron::trainPerceptron(vector < tuple < vector<int>,int> > v
             break;
         };
     }
-return weights;
+    return weights;
 }
 
 vector<tuple<string, double> > testPerceptron(vector<double> weights, vector < tuple < vector<int>,string> > entryToPredict){
-//vector<PerceptronOutput> testPerceptron(vector<double> weights, vector<PerceptronEntry> entryToPredict){
-
     vector<PerceptronOutput> auxVectorOfOutput(weights.size());
     vector<tuple<string, double> > vectorToReturn(weights.size());
     tuple<string, double> tupleAux;
@@ -139,14 +96,11 @@ vector<tuple<string, double> > testPerceptron(vector<double> weights, vector < t
 
     for (unsigned int j=0;j<=entryToPredict.size()-1;j++){
         //normalizo distancia
-
         probabilityAux = ((auxVectorOfOutput[j].getProduct() - dpMin) / (dpMax-dpMin));
-
         vectorToReturn[j] = make_tuple(auxVectorOfOutput[j].getMovieID(), probabilityAux);
 
     }
-
-return vectorToReturn;
+    return vectorToReturn;
 }
 
 
