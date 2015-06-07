@@ -2,9 +2,10 @@
 #define PERCEPTRON_H
 
 
-#include<vector>
-#include<string>
-#include"boost/tuple/tuple.hpp"
+#include <vector>
+#include <list>
+#include <string>
+#include "boost/tuple/tuple.hpp"
 
 using namespace std;
 using namespace boost;

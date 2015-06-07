@@ -1,8 +1,11 @@
+#include <cstdlib>
 #include "include/UnlabeledReview.h"
 #include "include/LabeledReview.h"
 #include "include/Perceptron.h"
+#include "include/HashingTrick.h"
 #include <boost/algorithm/string.hpp>
 #include "boost/tuple/tuple.hpp"
+#include "boost/lexical_cast.hpp"
 #include <list>
 #include <map>
 
@@ -31,8 +34,8 @@ map<string, int> ReadStopWords(){
     return stopWords;
 }
 
-list<tuple<vector<string>, string> > ReadLabeledFile(){
-    list<tuple<vector<string>, string> > labeledReviews;
+vector<tuple<vector<int>, int> > ReadLabeledFile(int dimensions){
+    vector<tuple<vector<int>, int> > labeledReviews;
     LabeledReview labeledReview;
 
     map<string, int> stopWords = ReadStopWords();
@@ -43,8 +46,15 @@ list<tuple<vector<string>, string> > ReadLabeledFile(){
     }
     else
     {
+        HashingTrick* hashingTrick = new HashingTrick(dimensions);
+
+        bool firstElement = true;
         while(labeledReview.FromFileLine(&labeledReadFile))
         {
+            if(firstElement){
+                firstElement = false;
+                continue;
+            }
             //let me explain myself, I need to get a vector of words + sentiment as a tuple
             vector<string> reviewVector;
             string reviewString = labeledReview.GetReview();
@@ -56,25 +66,35 @@ list<tuple<vector<string>, string> > ReadLabeledFile(){
                 if(stopWords[(*it)] == 1) continue;
                 cleanedVector.push_back(*it);
             }
-            tuple<vector<string>, string> labeledReviewTuple = make_tuple(cleanedVector, labeledReview.GetSentiment());
-
+            vector<int> hashedReview = hashingTrick->Hash(cleanedVector);
+            tuple<vector<int>, int> labeledReviewTuple = make_tuple(hashedReview, lexical_cast<int>(labeledReview.GetSentiment()));
             labeledReviews.push_back(labeledReviewTuple);
         }
+
+        delete hashingTrick;
         labeledReadFile.close();
     }
+
+
     return labeledReviews;
 }
 
-
-
 int main()
 {
-    list<tuple<vector<string>, string> > labeledReviews = ReadLabeledFile();
+    int dimensions = 200;
 
-    list<tuple<vector<string>, string> >::iterator reviewedIterator;
+    vector<tuple<vector<int>, int> > labeledReviews = ReadLabeledFile(dimensions);
+
+    /*vector<double> percentronWeights = Perceptron::trainPerceptron(labeledReviews, dimensions);
+    for (vector<double>::iterator it=percentronWeights.begin(); it!=percentronWeights.end(); ++it){
+        cout << *it << endl;
+        getchar();
+    }*/
+
+    vector<tuple<vector<int>, int> >::iterator reviewedIterator;
     for (reviewedIterator=labeledReviews.begin(); reviewedIterator!=labeledReviews.end(); ++reviewedIterator){
 
-        for (vector<string>::iterator it = get<0>(*reviewedIterator).begin(); it != get<0>(*reviewedIterator).end(); ++it)
+        for (vector<int>::iterator it = get<0>(*reviewedIterator).begin(); it != get<0>(*reviewedIterator).end(); ++it)
         {
             cout << *it << endl;
         }
