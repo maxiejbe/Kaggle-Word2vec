@@ -12,12 +12,12 @@
 class HashingTrick
 {
     public:
-        HashingTrick(int dimensions);
+        HashingTrick(unsigned long dimensions);
         std::vector<int> Hash(std::vector<std::string> stringVector);
         virtual ~HashingTrick();
     protected:
     private:
-        int dimensions;
+        unsigned long dimensions;
 };
 
 #endif // HASHINGTRICK_H

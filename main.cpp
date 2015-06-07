@@ -40,7 +40,7 @@ vector<tuple<vector<int>, int> > ReadLabeledFile(int dimensions){
 
     map<string, int> stopWords = ReadStopWords();
 
-    ifstream labeledReadFile("data/labeledTrainDataTest.tsv");
+    ifstream labeledReadFile("data/labeledTrainData.tsv");
     if(!labeledReadFile.is_open() ){
         cout << "Cannot read the labeled train data file." << endl ;
     }
@@ -81,14 +81,16 @@ vector<tuple<vector<int>, int> > ReadLabeledFile(int dimensions){
 
 int main()
 {
-    int dimensions = 200;
+    int dimensions = 20000;
 
     vector<tuple<vector<int>, int> > labeledReviews = ReadLabeledFile(dimensions);
 
+
     vector<double> percentronWeights = Perceptron::trainPerceptron(labeledReviews, dimensions);
+
     for (vector<double>::iterator it=percentronWeights.begin(); it!=percentronWeights.end(); ++it){
         cout << *it << endl;
-        getchar();
+        //getchar();
     }
 
     vector<tuple<vector<int>, int> >::iterator reviewedIterator;

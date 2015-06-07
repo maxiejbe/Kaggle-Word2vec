@@ -38,6 +38,7 @@
 		<Unit filename="include/LabeledReview.h" />
 		<Unit filename="include/LogisticRegression.h" />
 		<Unit filename="include/Perceptron.h" />
+		<Unit filename="include/PerceptronOutput.h" />
 		<Unit filename="include/Review.h" />
 		<Unit filename="include/StringCleaner.h" />
 		<Unit filename="include/UnlabeledReview.h" />
@@ -46,6 +47,7 @@
 		<Unit filename="src/LabeledReview.cpp" />
 		<Unit filename="src/LogisticRegression.cpp" />
 		<Unit filename="src/Perceptron.cpp" />
+		<Unit filename="src/PerceptronOutput.cpp" />
 		<Unit filename="src/Review.cpp" />
 		<Unit filename="src/StringCleaner.cpp" />
 		<Unit filename="src/UnlabeledReview.cpp" />

@@ -3,7 +3,7 @@
 using namespace std;
 using namespace boost;
 
-const double LEARNINGRATE = 0.05;
+const double LEARNINGRATE = 0.1;
 const int MAXLOOP = 50;
 
 Perceptron::Perceptron()
@@ -49,7 +49,7 @@ vector<double> Perceptron::trainPerceptron(vector<tuple<vector<int>,int> > revie
     vector<double> weights(dimension);
 
     while (true){
-        for (int i=0; i <= reviewsCount ; i++){
+        for (int i=0; i <= reviewsCount-1 ; i++){
 
             vectorIntAux = get<0>(reviews[i]);
             dp = dotProduct(weights, vectorIntAux);
@@ -65,9 +65,12 @@ vector<double> Perceptron::trainPerceptron(vector<tuple<vector<int>,int> > revie
                 updateWeights(&weights, error, vectorIntAux);
             }
         }
+        loopCounter+=1;
+
         if ((errorCounter==0) or (loopCounter == MAXLOOP)){
             break;
         }
+        errorCounter = 0;
     }
     return weights;
 }
