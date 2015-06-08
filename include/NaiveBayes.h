@@ -1,5 +1,5 @@
-#ifndef NAIVE_BAYES_H
-#define NAIVE_BAYES_H
+#ifndef NAIVEBAYES_H
+#define NAIVEBAYES_H
 
 #include <string>
 #include <fstream>
@@ -10,27 +10,26 @@
 #include "boost/tuple/tuple.hpp"
 #include <list>
 
-
 using namespace std;
 using namespace boost;
 
-class Naive_Bayes
+class NaiveBayes
 {
     public:
-        Naive_Bayes();
-        void bayesTrain(list<tuple<vector<string>, string> >X);
-        void bayesTest(list<tuple<vector<string>, string> >X);
+        NaiveBayes();
+        void BayesTrain(list<tuple<vector<string>, string> >X);
+        void BayesTest(list<tuple<vector<string>, string> >X);
         vector<tuple<string, float> > Resultado();
-        virtual ~Naive_Bayes();
+        virtual ~NaiveBayes();
     protected:
     private:
-    vector<tuple<string, float> > vectorResultados;
-    vector<string> hashespos;
-    vector<string> hashesneg;
-    int pos;
-    int neg;
-    int total;
-    float buscarenvector(vector<string>hashes,string x);
+        vector<tuple<string, float> > vectorResultados;
+        vector<string> hashespos;
+        vector<string> hashesneg;
+        int pos;
+        int neg;
+        int total;
+        float BuscarEnVector(vector<string>hashes,string x);
 };
 
-#endif // NAIVE_BAYES_H
+#endif // NAIVEBAYES_H

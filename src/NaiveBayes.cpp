@@ -1,6 +1,6 @@
-#include "Naive_Bayes.h"
+#include "NaiveBayes.h"
 
-Naive_Bayes::Naive_Bayes()
+NaiveBayes::NaiveBayes()
 {
     //ctor
     pos = 0;
@@ -8,7 +8,7 @@ Naive_Bayes::Naive_Bayes()
     total = 0;
 }
 
-void Naive_Bayes::bayesTrain(list<tuple<vector<string>, string> >X){
+void NaiveBayes::BayesTrain(list<tuple<vector<string>, string> >X){
     int i;
     list<tuple<vector<string>, string> >::iterator k = X.begin();
     tuple <vector<string>,string> tuplaAux;
@@ -30,7 +30,7 @@ void Naive_Bayes::bayesTrain(list<tuple<vector<string>, string> >X){
     total = pos + neg;
 }
 
-float Naive_Bayes::buscarenvector(vector<string>hashes,string x){
+float NaiveBayes::BuscarEnVector(vector<string>hashes,string x){
     int cantidad = 0;
     for (int i=0;i<size(hashes);i++)
         if (hashes[i].compare(x))
@@ -38,7 +38,7 @@ float Naive_Bayes::buscarenvector(vector<string>hashes,string x){
     return cantidad;
 }
 
-void Naive_Bayes::bayesTest(list<tuple<vector<string>, string> >X){
+void NaiveBayes::BayesTest(list<tuple<vector<string>, string> >X){
     vector<string> resultado;
     vector<string> vectorAux;
     tuple <vector<string>,string> tuplaAux;
@@ -60,8 +60,8 @@ void Naive_Bayes::bayesTest(list<tuple<vector<string>, string> >X){
         vectorAux = get<0>(tuplaAux);
         stringAux = get<1>(tuplaAux);
         for (int i=0;i<size(vectorAux);i++){
-            cantparnegativos = buscarenvector(hashesneg,vectorAux[i]);
-            cantparpositivos = buscarenvector(hashespos,vectorAux[i]);
+            cantparnegativos = BuscarEnVector(hashesneg,vectorAux[i]);
+            cantparpositivos = BuscarEnVector(hashespos,vectorAux[i]);
             if (cantparnegativos != 0 || cantparpositivos != 0)
                 cantidadparcial = cantparnegativos + cantparpositivos;
             if (cantparnegativos != 0)
@@ -80,12 +80,12 @@ void Naive_Bayes::bayesTest(list<tuple<vector<string>, string> >X){
 
 }
 
-vector<tuple<string, float> > Naive_Bayes::Resultado(){
+vector<tuple<string, float> > NaiveBayes::Resultado(){
     return vectorResultados;
 
 }
 
-Naive_Bayes::~Naive_Bayes()
+NaiveBayes::~NaiveBayes()
 {
     //dtor
 }
