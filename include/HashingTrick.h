@@ -14,7 +14,7 @@ class HashingTrick
 {
     public:
         HashingTrick(unsigned long dimensions);
-        std::vector<boost::tuple<unsigned long, int> > Hash(std::vector<std::string> stringVector);
+        std::map<unsigned long, int> Hash(std::vector<std::string> stringVector);
         virtual ~HashingTrick();
     protected:
     private:
