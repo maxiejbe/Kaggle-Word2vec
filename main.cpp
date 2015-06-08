@@ -86,6 +86,7 @@ int main()
     vector<tuple<vector<int>, int> > labeledReviews = ReadLabeledFile(dimensions);
 
 
+
     vector<double> percentronWeights = Perceptron::trainPerceptron(labeledReviews, dimensions);
 
     for (vector<double>::iterator it=percentronWeights.begin(); it!=percentronWeights.end(); ++it){

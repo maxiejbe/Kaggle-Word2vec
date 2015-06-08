@@ -50,7 +50,7 @@ void updateWeights(vector<double>* weights,int error,vector<tuple<unsigned long,
 vector<double> Perceptron::trainPerceptron(vector<tuple<vector<tuple<unsigned long,int>>,int>> reviews, unsigned long dimension){
 
     int reviewsCount = reviews.size();
-    vector<unsigned long> vectorLongAux();
+    vector<tuple<unsigned long,int>> vectorLongYCantAux();
     tuple<vector<unsigned long>, int> tupleAux();
     int resultado=0;
     int error = 0;
