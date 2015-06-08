@@ -92,7 +92,7 @@ vector<double> Perceptron::trainPerceptron(vector < tuple < vector < tuple < uns
     return weights;
 }
 
-vector<tuple<string, double> > testPerceptron(vector<double> weights, vector < tuple < vector<int>,string> > entryToPredict){
+vector<tuple<string, double> > testPerceptron(vector<double> weights, vector < tuple < vector < tuple < unsigned long,int > >,string > > entryToPredict){
 
     vector<PerceptronOutput> auxVectorOfOutput(weights.size());
     vector<tuple<string, double> > vectorToReturn(weights.size());
@@ -103,7 +103,7 @@ vector<tuple<string, double> > testPerceptron(vector<double> weights, vector < t
     double dpMin = 0;
     double probabilityAux = 0;
 
-    for (unsigned int i=0;i<=weights.size()-1;i++){
+    for (unsigned long i=0;i<weights.size();i++){
         //calculo producto entre weights y la entrada
         dp = dotProduct(weights, get<0>(entryToPredict[i]));
 
@@ -115,7 +115,7 @@ vector<tuple<string, double> > testPerceptron(vector<double> weights, vector < t
         auxVectorOfOutput[i] = pOutputAux;
     }
 
-    for (unsigned int j=0;j<=entryToPredict.size()-1;j++){
+    for (unsigned long j=0;j<entryToPredict.size();j++){
         //normalizo distancia
         probabilityAux = ((auxVectorOfOutput[j].getProduct() - dpMin) / (dpMax-dpMin));
         vectorToReturn[j] = make_tuple(auxVectorOfOutput[j].getMovieID(), probabilityAux);
