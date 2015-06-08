@@ -17,28 +17,25 @@ Perceptron::~Perceptron()
 }
 
 double dotProduct(vector<double> weights, map<unsigned long,int > hashedReview){
-    int cantHashes = 0;
     double total = 0 ;
 
     for (map<unsigned long,int>::iterator it = hashedReview.begin(); it != hashedReview.end(); ++it)
     {
-        cantHashes = it->second;
-        total += weights[it->first] * cantHashes;
+        //from the it: first is the word hash value, second is the amount of hashes
+        total += weights[it->first] * it->second;
     }
     return total;
 }
 
 void updateWeights(vector<double>* weights,int error,map<unsigned long,int> hashedReview){
-    int cantHashes;
-
     for (map<unsigned long,int>::iterator it = hashedReview.begin(); it != hashedReview.end(); ++it)
     {
-        cantHashes = it->second;
-        (*weights)[it->first] += LEARNINGRATE * error * cantHashes;
+        //from the it: first is the word hash value, second is the amount of hashes
+        (*weights)[it->first] += LEARNINGRATE * error * it->second;
     }
 }
 
-vector<double> Perceptron::trainPerceptron(vector < tuple < map<unsigned long,int >,int > > reviews, unsigned long dimension){
+vector<double> Perceptron::TrainPerceptron(vector < tuple < map<unsigned long,int >,int > > reviews, unsigned long dimension){
 
 
     int reviewsCount = reviews.size();
@@ -78,7 +75,7 @@ vector<double> Perceptron::trainPerceptron(vector < tuple < map<unsigned long,in
     return weights;
 }
 
-vector<tuple<string, double> > testPerceptron(vector<double> weights, vector < tuple < map < unsigned long,int >,string > > entryToPredict){
+vector<tuple<string, double> > Perceptron::TestPerceptron(vector<double> weights, vector<tuple<map<unsigned long,int>,string> > entryToPredict){
 
     vector<PerceptronOutput> auxVectorOfOutput(weights.size());
     vector<tuple<string, double> > vectorToReturn(weights.size());
