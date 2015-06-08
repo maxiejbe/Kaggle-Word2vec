@@ -28,19 +28,30 @@ double dotProduct(vector<double> vec1, vector<int> vec2){
     return total;
 }
 
-void updateWeights(vector<double>* weights,int error,vector<int> hashedReview){
+void updateWeights(vector<double>* weights,int error,vector<tuple<unsigned long,int> > hashedReview){
 
-    for (unsigned int i = 0; i<=weights->size()-1; i++){
-        (*weights)[i] = LEARNINGRATE * error * hashedReview[i];
+    unsigned long hashAux;
+    int cantHash;
+
+    for (unsigned long i = 0; i<hashedReview.size();i++){
+
+        hashAux = get<0>(hashedReview[i]);
+        cantHash = get<1>(hashedReview[i]);
+
+        (*weights)[hashAux] = LEARNINGRATE * error * cantHash;
+
     }
+  //  for (unsigned int i = 0; i<=weights->size()-1; i++){
+  //      (*weights)[i] = LEARNINGRATE * error * hashedReview[i];
+  //  }
 
 }
 
-vector<double> Perceptron::trainPerceptron(vector<tuple<vector<int>,int> > reviews, int dimension){
+vector<double> Perceptron::trainPerceptron(vector<tuple<vector<tuple<unsigned long,int>>,int>> reviews, unsigned long dimension){
 
     int reviewsCount = reviews.size();
-    vector<int> vectorIntAux;
-    tuple<vector<int>, int> tupleAux();
+    vector<unsigned long> vectorLongAux();
+    tuple<vector<unsigned long>, int> tupleAux();
     int resultado=0;
     int error = 0;
     int errorCounter = 0;
@@ -52,7 +63,7 @@ vector<double> Perceptron::trainPerceptron(vector<tuple<vector<int>,int> > revie
         for (int i=0; i <= reviewsCount-1 ; i++){
 
             vectorIntAux = get<0>(reviews[i]);
-            dp = dotProduct(weights, vectorIntAux);
+            dp = dotProduct(weights, vectorLongAux);
             if (dp > 0.5) {
                 resultado = 1;
             }
@@ -62,7 +73,7 @@ vector<double> Perceptron::trainPerceptron(vector<tuple<vector<int>,int> > revie
             error = get<1>(reviews[i]) - resultado;
             if (error != 0 ){
                 errorCounter += 1;
-                updateWeights(&weights, error, vectorIntAux);
+                updateWeights(&weights, error, vectorLongAux);
             }
         }
         loopCounter+=1;
