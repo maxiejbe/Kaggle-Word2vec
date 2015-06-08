@@ -81,31 +81,31 @@ vector<tuple<vector<int>, int> > ReadLabeledFile(int dimensions){
 
 int main()
 {
-    int dimensions = 20000;
-
-    vector<tuple<vector<int>, int> > labeledReviews = ReadLabeledFile(dimensions);
-
-
-
-    vector<double> percentronWeights = Perceptron::trainPerceptron(labeledReviews, dimensions);
-
-    for (vector<double>::iterator it=percentronWeights.begin(); it!=percentronWeights.end(); ++it){
-        cout << *it << endl;
-        //getchar();
-    }
-
-    vector<tuple<vector<int>, int> >::iterator reviewedIterator;
-    for (reviewedIterator=labeledReviews.begin(); reviewedIterator!=labeledReviews.end(); ++reviewedIterator){
-
-        for (vector<int>::iterator it = get<0>(*reviewedIterator).begin(); it != get<0>(*reviewedIterator).end(); ++it)
-        {
-            cout << *it << endl;
-        }
-        cout << get<1>(*reviewedIterator) << endl ;
-        getchar();
-    }
-
-    return 0;
+//    int dimensions = 20000;
+//
+//    vector<tuple<vector<int>, int> > labeledReviews = ReadLabeledFile(dimensions);
+//
+//
+//
+//    vector<double> percentronWeights = Perceptron::trainPerceptron(labeledReviews, dimensions);
+//
+//    for (vector<double>::iterator it=percentronWeights.begin(); it!=percentronWeights.end(); ++it){
+//        cout << *it << endl;
+//        //getchar();
+//    }
+//
+//    vector<tuple<vector<int>, int> >::iterator reviewedIterator;
+//    for (reviewedIterator=labeledReviews.begin(); reviewedIterator!=labeledReviews.end(); ++reviewedIterator){
+//
+//        for (vector<int>::iterator it = get<0>(*reviewedIterator).begin(); it != get<0>(*reviewedIterator).end(); ++it)
+//        {
+//            cout << *it << endl;
+//        }
+//        cout << get<1>(*reviewedIterator) << endl ;
+//        getchar();
+//    }
+//
+//    return 0;
 }
 
 

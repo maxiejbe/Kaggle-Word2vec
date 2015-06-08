@@ -16,13 +16,18 @@ Perceptron::~Perceptron()
     //dtor
 }
 
-double dotProduct(vector<double> vec1, vector<int> vec2){
+double dotProduct(vector<double> vec1, vector < tuple<unsigned long,int > > vec2){
 
     int dimension = vec2.size();
+    unsigned long posicionVec2 = 0;
+    int cantPosicionVec2 = 0;
     double total = 0 ;
 
-    for (int i=0; i<=dimension-1; i++){
-            total += vec1[i] * vec2[i];
+
+    for (int i=0; i<dimension; i++){
+            posicionVec2 = get<0>(vec2[i]);
+            cantPosicionVec2 = get<1>(vec2[i]);
+            total += vec1[posicionVec2] * cantPosicionVec2;
         }
 
     return total;
@@ -39,7 +44,6 @@ void updateWeights(vector<double>* weights,int error,vector<tuple<unsigned long,
         cantHash = get<1>(hashedReview[i]);
 
         (*weights)[hashAux] = LEARNINGRATE * error * cantHash;
-
     }
   //  for (unsigned int i = 0; i<=weights->size()-1; i++){
   //      (*weights)[i] = LEARNINGRATE * error * hashedReview[i];
@@ -47,24 +51,25 @@ void updateWeights(vector<double>* weights,int error,vector<tuple<unsigned long,
 
 }
 
-vector<double> Perceptron::trainPerceptron(vector<tuple<vector<tuple<unsigned long,int>>,int>> reviews, unsigned long dimension){
+vector<double> Perceptron::trainPerceptron(vector < tuple < vector < tuple < unsigned long,int > >,int > > reviews, unsigned long dimension){
 
 
     int reviewsCount = reviews.size();
-    vector<tuple<unsigned long,int>> vectorLongYCantAux();
-    tuple<vector<unsigned long>, int> tupleAux();
+    vector<tuple<unsigned long,int> > vectorLongYCantAux;
+   // tuple<vector<unsigned long>, int> tupleAux();
     int resultado=0;
     int error = 0;
     int errorCounter = 0;
     int loopCounter = 0;
     double dp = 0;
+
     vector<double> weights(dimension);
 
     while (true){
         for (int i=0; i <= reviewsCount-1 ; i++){
 
-            vectorIntAux = get<0>(reviews[i]);
-            dp = dotProduct(weights, vectorLongAux);
+            vectorLongYCantAux = get<0>(reviews[i]);
+            dp = dotProduct(weights, vectorLongYCantAux);
             if (dp > 0.5) {
                 resultado = 1;
             }
@@ -74,7 +79,7 @@ vector<double> Perceptron::trainPerceptron(vector<tuple<vector<tuple<unsigned lo
             error = get<1>(reviews[i]) - resultado;
             if (error != 0 ){
                 errorCounter += 1;
-                updateWeights(&weights, error, vectorLongAux);
+                updateWeights(&weights, error, vectorLongYCantAux);
             }
         }
         loopCounter+=1;
@@ -88,6 +93,7 @@ vector<double> Perceptron::trainPerceptron(vector<tuple<vector<tuple<unsigned lo
 }
 
 vector<tuple<string, double> > testPerceptron(vector<double> weights, vector < tuple < vector<int>,string> > entryToPredict){
+
     vector<PerceptronOutput> auxVectorOfOutput(weights.size());
     vector<tuple<string, double> > vectorToReturn(weights.size());
     tuple<string, double> tupleAux;
