@@ -43,7 +43,7 @@ void updateWeights(vector<double>* weights,int error,vector<tuple<unsigned long,
         hashAux = get<0>(hashedReview[i]);
         cantHash = get<1>(hashedReview[i]);
 
-        (*weights)[hashAux] = LEARNINGRATE * error * cantHash;
+        (*weights)[hashAux] += LEARNINGRATE * error * cantHash;
     }
   //  for (unsigned int i = 0; i<=weights->size()-1; i++){
   //      (*weights)[i] = LEARNINGRATE * error * hashedReview[i];
@@ -61,7 +61,7 @@ vector<double> Perceptron::trainPerceptron(vector < tuple < vector < tuple < uns
     int error = 0;
     int errorCounter = 0;
     int loopCounter = 0;
-    double dp = 0;
+    double product = 0;
 
     vector<double> weights(dimension);
 
@@ -69,8 +69,8 @@ vector<double> Perceptron::trainPerceptron(vector < tuple < vector < tuple < uns
         for (int i=0; i <= reviewsCount-1 ; i++){
 
             vectorLongYCantAux = get<0>(reviews[i]);
-            dp = dotProduct(weights, vectorLongYCantAux);
-            if (dp > 0.5) {
+            product = dotProduct(weights, vectorLongYCantAux);
+            if (product > 0.5) {
                 resultado = 1;
             }
             else{
@@ -98,26 +98,26 @@ vector<tuple<string, double> > testPerceptron(vector<double> weights, vector < t
     vector<tuple<string, double> > vectorToReturn(weights.size());
     tuple<string, double> tupleAux;
     PerceptronOutput pOutputAux;
-    double dp = 0;
-    double dpMax = 0;
-    double dpMin = 0;
+    double product = 0;
+    double productMax = 0;
+    double productMin = 0;
     double probabilityAux = 0;
 
     for (unsigned long i=0;i<weights.size();i++){
         //calculo producto entre weights y la entrada
-        dp = dotProduct(weights, get<0>(entryToPredict[i]));
+        product = dotProduct(weights, get<0>(entryToPredict[i]));
 
-        if (dp>dpMax) dpMax=dp;
-        if (dp<dpMin) dpMin=dp;
+        if (product>productMax) productMax=product;
+        if (product<productMin) productMin=product;
 
-        pOutputAux.setProduct(dp);
+        pOutputAux.setProduct(product);
         pOutputAux.setMovieID(get<1>(entryToPredict[i]));
         auxVectorOfOutput[i] = pOutputAux;
     }
 
     for (unsigned long j=0;j<entryToPredict.size();j++){
         //normalizo distancia
-        probabilityAux = ((auxVectorOfOutput[j].getProduct() - dpMin) / (dpMax-dpMin));
+        probabilityAux = ((auxVectorOfOutput[j].getProduct() - productMin) / (productMax-productMin));
         vectorToReturn[j] = make_tuple(auxVectorOfOutput[j].getMovieID(), probabilityAux);
 
     }
