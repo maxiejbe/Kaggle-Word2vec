@@ -7,6 +7,7 @@
 #include "boost/tuple/tuple.hpp"
 
 class Perceptron{
+
     public:
         Perceptron();
         virtual ~Perceptron();
