@@ -79,37 +79,6 @@ vector<tuple<map<unsigned long,int>,int> > ReadLabeledFile(long dimensions){
     return labeledReviews;
 }
 
-int main()
-{
-    long dimensions = 20000;
-
-    vector<tuple<map<unsigned long,int>,int> > labeledReviews = ReadLabeledFile(dimensions);
-
-    /*vector<double> percentronWeights = Perceptron::trainPerceptron(labeledReviews, dimensions);
-
-    for (vector<double>::iterator it=percentronWeights.begin(); it!=percentronWeights.end(); ++it){
-        cout << *it << endl;
-        getchar();
-    }*/
-
-
-
-    vector<tuple<map<unsigned long,int>, int> >::iterator reviewedIterator;
-    for (reviewedIterator=labeledReviews.begin(); reviewedIterator!=labeledReviews.end(); ++reviewedIterator){
-
-        for (map<unsigned long,int>::iterator it = get<0>(*reviewedIterator).begin(); it != get<0>(*reviewedIterator).end(); ++it)
-        {
-            cout << it->first << endl;
-            cout << it->second << endl;
-        }
-        cout << get<1>(*reviewedIterator) << endl ;
-        getchar();
-    }
-
-    return 0;
-}
-
-
 void ReadUnlabeledFile(){
     ifstream unlabeledReadFile("data/unlabeledTrainData.tsv");
     if(!unlabeledReadFile.is_open() ){
@@ -126,4 +95,33 @@ void ReadUnlabeledFile(){
         }
         unlabeledReadFile.close();
     }
+}
+
+
+int main()
+{
+    long dimensions = 20000;
+
+    vector<tuple<map<unsigned long,int>,int> > labeledReviews = ReadLabeledFile(dimensions);
+
+    vector<double> percentronWeights = Perceptron::trainPerceptron(labeledReviews, dimensions);
+
+    for (vector<double>::iterator it=percentronWeights.begin(); it!=percentronWeights.end(); ++it){
+        cout << *it << endl;
+        //getchar();
+    }
+
+    vector<tuple<map<unsigned long,int>, int> >::iterator reviewedIterator;
+    for (reviewedIterator=labeledReviews.begin(); reviewedIterator!=labeledReviews.end(); ++reviewedIterator){
+
+        for (map<unsigned long,int>::iterator it = get<0>(*reviewedIterator).begin(); it != get<0>(*reviewedIterator).end(); ++it)
+        {
+            cout << it->first << endl;
+            cout << it->second << endl;
+        }
+        cout << get<1>(*reviewedIterator) << endl ;
+        //getchar();
+    }
+
+    return 0;
 }
