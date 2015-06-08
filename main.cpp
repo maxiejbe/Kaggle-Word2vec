@@ -34,8 +34,12 @@ map<string, int> ReadStopWords(){
     return stopWords;
 }
 
-vector<tuple<vector<int>, int> > ReadLabeledFile(int dimensions){
-    vector<tuple<vector<int>, int> > labeledReviews;
+//let's explain this
+//(1) tuple<unsigned long,int> is <hash, count>
+//(2) tuple<vector<(1)>,int> is <collection of <hash, count>, sentiment>
+
+vector<tuple<vector<tuple<unsigned long,int> >,int> > ReadLabeledFile(long dimensions){
+    vector<tuple<vector<tuple<unsigned long,int> >,int> > labeledReviews;
     LabeledReview labeledReview;
 
     map<string, int> stopWords = ReadStopWords();
@@ -66,8 +70,8 @@ vector<tuple<vector<int>, int> > ReadLabeledFile(int dimensions){
                 if(stopWords[(*it)] == 1) continue;
                 cleanedVector.push_back(*it);
             }
-            vector<int> hashedReview = hashingTrick->Hash(cleanedVector);
-            tuple<vector<int>, int> labeledReviewTuple = make_tuple(hashedReview, lexical_cast<int>(labeledReview.GetSentiment()));
+            vector<tuple<unsigned long, int> > hashedReview = hashingTrick->Hash(cleanedVector);
+            tuple<vector<tuple<unsigned long, int> >, int> labeledReviewTuple = make_tuple(hashedReview, lexical_cast<int>(labeledReview.GetSentiment()));
             labeledReviews.push_back(labeledReviewTuple);
         }
 
@@ -81,31 +85,30 @@ vector<tuple<vector<int>, int> > ReadLabeledFile(int dimensions){
 
 int main()
 {
-//    int dimensions = 20000;
-//
-//    vector<tuple<vector<int>, int> > labeledReviews = ReadLabeledFile(dimensions);
-//
-//
-//
-//    vector<double> percentronWeights = Perceptron::trainPerceptron(labeledReviews, dimensions);
-//
-//    for (vector<double>::iterator it=percentronWeights.begin(); it!=percentronWeights.end(); ++it){
-//        cout << *it << endl;
-//        //getchar();
-//    }
-//
-//    vector<tuple<vector<int>, int> >::iterator reviewedIterator;
-//    for (reviewedIterator=labeledReviews.begin(); reviewedIterator!=labeledReviews.end(); ++reviewedIterator){
-//
-//        for (vector<int>::iterator it = get<0>(*reviewedIterator).begin(); it != get<0>(*reviewedIterator).end(); ++it)
-//        {
-//            cout << *it << endl;
-//        }
-//        cout << get<1>(*reviewedIterator) << endl ;
-//        getchar();
-//    }
-//
-//    return 0;
+    long dimensions = 20000;
+
+    vector<tuple<vector<tuple<unsigned long,int> >,int> > labeledReviews = ReadLabeledFile(dimensions);
+
+    vector<double> percentronWeights = Perceptron::trainPerceptron(labeledReviews, dimensions);
+
+    for (vector<double>::iterator it=percentronWeights.begin(); it!=percentronWeights.end(); ++it){
+        cout << *it << endl;
+        getchar();
+    }
+
+    vector<tuple<vector<tuple<unsigned long,int> >, int> >::iterator reviewedIterator;
+    for (reviewedIterator=labeledReviews.begin(); reviewedIterator!=labeledReviews.end(); ++reviewedIterator){
+
+        for (vector<tuple<unsigned long,int> >::iterator it = get<0>(*reviewedIterator).begin(); it != get<0>(*reviewedIterator).end(); ++it)
+        {
+            cout << get<0>(*it) << endl;
+            cout << get<1>(*it) << endl;
+        }
+        cout << get<1>(*reviewedIterator) << endl ;
+        getchar();
+    }
+
+    return 0;
 }
 
 
