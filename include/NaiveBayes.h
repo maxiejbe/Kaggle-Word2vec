@@ -9,27 +9,25 @@
 #include <boost/algorithm/string.hpp>
 #include "boost/tuple/tuple.hpp"
 #include <list>
+#include <map>
 
-using namespace std;
-using namespace boost;
 
 class NaiveBayes
 {
     public:
         NaiveBayes();
-        void BayesTrain(list<tuple<vector<string>, string> >X);
-        void BayesTest(list<tuple<vector<string>, string> >X);
-        vector<tuple<string, float> > Resultado();
+        void BayesTrain(std::vector<boost::tuple<std::map<unsigned long,int>,int> >X);
+        void BayesTest(std::vector<boost::tuple<std::map<unsigned long,int>,int> >X);
+        std::map<int,float> Resultado();
         virtual ~NaiveBayes();
     protected:
     private:
-        vector<tuple<string, float> > vectorResultados;
-        vector<string> hashespos;
-        vector<string> hashesneg;
+        std::map<unsigned long,int> hashespos;
+        std::map<unsigned long,int> hashesneg;
         int pos;
         int neg;
         int total;
-        float BuscarEnVector(vector<string>hashes,string x);
+        std::map<int,float> resultado;
 };
 
 #endif // NAIVEBAYES_H

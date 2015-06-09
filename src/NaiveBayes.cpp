@@ -8,42 +8,38 @@ NaiveBayes::NaiveBayes()
     total = 0;
 }
 
-void NaiveBayes::BayesTrain(list<tuple<vector<string>, string> >X){
-    int i;
-    list<tuple<vector<string>, string> >::iterator k = X.begin();
-    tuple <vector<string>,string> tuplaAux;
-    vector<string> vectorAux;
-    while (k != X.end()){
-        tuplaAux = *k++;
-        vectorAux = get<0>(tuplaAux);
-        if (get<1>(tuplaAux).compare("1")==0){
+void NaiveBayes::BayesTrain(std::vector<boost::tuple<std::map<unsigned long,int>,int> > TrainData){
+    unsigned long i;
+    boost::tuple <std::map<unsigned long,int>,int> tuplaAux;
+    std::map<unsigned long,int> mapAux;
+    std::map<unsigned long,int>::iterator it = mapAux.begin();
+
+
+    for(i=0;i<boost::size(TrainData);i++){
+        tuplaAux = TrainData[i];
+        mapAux = boost::tuples::get<0>(tuplaAux);
+        if (boost::tuples::get<1>(tuplaAux)==0){
             pos++;
-            for(i=0;i<size(vectorAux);i++)
-                hashespos.push_back(vectorAux[i]);
+            for(it;it!=mapAux.end();++it)
+                hashespos[it->first]=it->second;
             }
         else {
             neg++;
-            for(i=0;i<size(vectorAux);i++)
-                hashesneg.push_back(vectorAux[i]);
+            for(it;it!=mapAux.end();++it)
+                hashesneg[it->first]=it->second;
             }
     }
     total = pos + neg;
 }
 
-float NaiveBayes::BuscarEnVector(vector<string>hashes,string x){
-    int cantidad = 0;
-    for (int i=0;i<size(hashes);i++)
-        if (hashes[i].compare(x))
-            cantidad++;
-    return cantidad;
-}
+void NaiveBayes::BayesTest(std::vector<boost::tuple<std::map<unsigned long,int>,int> > TestData){
 
-void NaiveBayes::BayesTest(list<tuple<vector<string>, string> >X){
-    vector<string> resultado;
-    vector<string> vectorAux;
-    tuple <vector<string>,string> tuplaAux;
-    string stringAux;
-    list<tuple<vector<string>, string> >::iterator k = X.begin();
+    int ID;
+    unsigned long i;
+    boost::tuple <std::map<unsigned long,int>,int> tuplaAux;
+    std::map<unsigned long,int> mapAux;
+    std::map<unsigned long,int>::iterator it = mapAux.begin();
+
     float cantparpositivos = 0;
     float cantparnegativos = 0;
     float cantidadparcial = 0;
@@ -55,13 +51,13 @@ void NaiveBayes::BayesTest(list<tuple<vector<string>, string> >X){
     float probposreview; //Probabilidad de que sea positivo dado un review
     float probnegreview; //Probabilidad de que sea negativo dado un review
 
-    while (k != X.end()){
-        tuplaAux = *k++;
-        vectorAux = get<0>(tuplaAux);
-        stringAux = get<1>(tuplaAux);
-        for (int i=0;i<size(vectorAux);i++){
-            cantparnegativos = BuscarEnVector(hashesneg,vectorAux[i]);
-            cantparpositivos = BuscarEnVector(hashespos,vectorAux[i]);
+    for(i=0;i<boost::size(TestData);i++){
+        tuplaAux = TestData[i];
+        mapAux = boost::tuples::get<0>(tuplaAux);
+        ID = boost::tuples::get<1>(tuplaAux);
+        for (it;it!=mapAux.end();++it){
+            cantparnegativos = hashesneg[it->first];
+            cantparpositivos = hashespos[it->first];
             if (cantparnegativos != 0 || cantparpositivos != 0)
                 cantidadparcial = cantparnegativos + cantparpositivos;
             if (cantparnegativos != 0)
@@ -73,15 +69,14 @@ void NaiveBayes::BayesTest(list<tuple<vector<string>, string> >X){
         }
         probnegreview = (probreviewneg*probneg)/probreview;
         probposreview = (probreviewpos*probpos)/probreview;
-        tuple<string, float> idprob = make_tuple(stringAux, probposreview);
-        vectorResultados.push_back(idprob);
+        resultado[ID] = probposreview;
 
     }
 
 }
 
-vector<tuple<string, float> > NaiveBayes::Resultado(){
-    return vectorResultados;
+std::map<int,float> NaiveBayes::Resultado(){
+    return resultado;
 
 }
 
