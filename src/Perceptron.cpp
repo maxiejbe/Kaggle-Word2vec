@@ -36,33 +36,22 @@ void updateWeights(vector<double>* weights,int error,map<unsigned long,int> hash
 }
 
 vector<double> Perceptron::TrainPerceptron(vector < tuple < map<unsigned long,int >,int > > reviews, unsigned long dimension){
-
-
-    int reviewsCount = reviews.size();
-    map<unsigned long,int> vectorLongYCantAux;
-    int resultado=0;
-    int error = 0;
     int errorCounter = 0;
     int loopCounter = 0;
-    double product = 0;
 
     vector<double> weights(dimension);
 
     while (true){
-        for (int i=0; i < reviewsCount ; i++){
+        for (int i=0; i < reviews.size() ; i++){
 
-            vectorLongYCantAux = get<0>(reviews[i]);
-            product = dotProduct(weights, vectorLongYCantAux);
-            if (product > 0.5) {
-                resultado = 1;
-            }
-            else{
-                resultado = 0;
-            };
-            error = get<1>(reviews[i]) - resultado;
+            //product between weight and review: 1 or 0 depending on the result
+            int resultado = dotProduct(weights, get<0>(reviews[i])) > 0.5 ? 1 : 0;
+
+            //if error calculation is != 0
+            int error = get<1>(reviews[i]) - resultado;
             if (error != 0 ){
                 errorCounter ++;
-                updateWeights(&weights, error, vectorLongYCantAux);
+                updateWeights(&weights, error, get<0>(reviews[i]));
             }
         }
         loopCounter++;
@@ -75,36 +64,29 @@ vector<double> Perceptron::TrainPerceptron(vector < tuple < map<unsigned long,in
     return weights;
 }
 
-vector<tuple<string, double> > Perceptron::TestPerceptron(vector<double> weights, vector<tuple<map<unsigned long,int>,string> > entryToPredict){
+map<string, double> Perceptron::TestPerceptron(vector<double> weights, vector<tuple<map<unsigned long,int>,string> > reviewsToPredict){
 
-    vector<PerceptronOutput> auxVectorOfOutput(weights.size());
-    vector<tuple<string, double> > vectorToReturn(weights.size());
-    tuple<string, double> tupleAux;
-    PerceptronOutput pOutputAux;
-    double product = 0;
-    double productMax = 0;
-    double productMin = 0;
-    double probabilityAux = 0;
+    map<string, double> valuatedReviews;
+    double maxProduct = 0;
+    double minProduct = 0;
 
-    for (unsigned long i=0;i<weights.size();i++){
-        //calculo producto entre weights y la entrada
-        product = dotProduct(weights, get<0>(entryToPredict[i]));
+    for (vector<tuple<map<unsigned long,int>,string> >::iterator revIterator = reviewsToPredict.begin(); revIterator != reviewsToPredict.end(); ++revIterator)
+    {
+        double product = dotProduct(weights, get<0>(*revIterator));
+        if (product>maxProduct) maxProduct=product;
+        if (product<minProduct) minProduct=product;
 
-        if (product>productMax) productMax=product;
-        if (product<productMin) productMin=product;
-
-        pOutputAux.setProduct(product);
-        pOutputAux.setMovieID(get<1>(entryToPredict[i]));
-        auxVectorOfOutput[i] = pOutputAux;
+        //first product calculation to review id index
+        valuatedReviews[get<1>(*revIterator)] = product;
     }
 
-    for (unsigned long j=0;j<entryToPredict.size();j++){
-        //normalizo distancia
-        probabilityAux = ((auxVectorOfOutput[j].getProduct() - productMin) / (productMax-productMin));
-        vectorToReturn[j] = make_tuple(auxVectorOfOutput[j].getMovieID(), probabilityAux);
-
+    //normalize distance
+    for (map<string,double>::iterator mapRevIterator = valuatedReviews.begin(); mapRevIterator != valuatedReviews.end(); ++mapRevIterator)
+    {
+        double currentProbability = mapRevIterator->second;
+        mapRevIterator->second = (currentProbability - minProduct) / (maxProduct - minProduct);
     }
-    return vectorToReturn;
+    return valuatedReviews;
 }
 
 

@@ -125,7 +125,7 @@ vector<tuple<map<unsigned long,int>,string> > ReadUnlabeledFile(long dimensions)
 
 int main()
 {
-    long dimensions = 20000;
+    long dimensions = 20;
 
     cout << "Processing labeled reviews..." << endl ;
     vector<tuple<map<unsigned long,int>,int> > labeledReviews = ReadLabeledFile(dimensions);
@@ -140,14 +140,14 @@ int main()
     cout << "Done" << endl ;
 
     cout << "Calculating Perceptron probabilities..." << endl ;
-    vector<tuple<string, double> > evaluatedReviews = Perceptron::TestPerceptron(percentronWeights, unlabeledReviews);
+    map<string, double> evaluatedReviews = Perceptron::TestPerceptron(percentronWeights, unlabeledReviews);
     cout << "Done" << endl ;
 
 
-    for (vector<tuple<string, double> >::iterator it = evaluatedReviews.begin(); it != evaluatedReviews.end(); ++it)
+    for (map<string, double>::iterator it = evaluatedReviews.begin(); it != evaluatedReviews.end(); ++it)
     {
-        cout << get<0>(*it) << endl;
-        cout << get<1>(*it) << endl;
+        cout << it->first << endl;
+        cout << it->second << endl;
     }
 
     return 0;
