@@ -17,7 +17,7 @@ map<string, int> ReadStopWords(){
 
     ifstream labeledReadFile("data/stopwords.txt");
     if(!labeledReadFile.is_open() ){
-        cout << "Cannot read the stop words data file." << endl ;
+        cout << "Could not read the stop words data file." << endl ;
     }
     else
     {
@@ -42,7 +42,7 @@ vector<tuple<map<unsigned long,int>,int> > ReadLabeledFile(long dimensions){
 
     ifstream labeledReadFile("data/labeledTrainData.tsv");
     if(!labeledReadFile.is_open() ){
-        cout << "Cannot read the labeled train data file." << endl ;
+        cout << "Could not read the labeled train data file." << endl ;
     }
     else
     {
@@ -84,9 +84,9 @@ vector<tuple<map<unsigned long,int>,string> > ReadUnlabeledFile(long dimensions)
 
     map<string, int> stopWords = ReadStopWords();
 
-    ifstream unlabeledReadFile("data/unlabeledTrainData.tsv");
+    ifstream unlabeledReadFile("data/testData.tsv");
     if(!unlabeledReadFile.is_open() ){
-        cout << "Cannot read the unlabeled train data file." << endl ;
+        cout << "Could not read the unlabeled test data file." << endl ;
     }
     else
     {
@@ -122,6 +122,24 @@ vector<tuple<map<unsigned long,int>,string> > ReadUnlabeledFile(long dimensions)
     return unlabeledReviews;
 }
 
+void ToOutputFile(map<string, double> evaluatedReviews){
+    ofstream outputFile ("output/generatedFile.csv");
+    if(!outputFile.is_open() ){
+        cout << "Cannot read the output data file." << endl ;
+    }
+    else
+    {
+        outputFile << "\"id\",\"sentiment\"\n";
+
+        for (map<string, double>::iterator it = evaluatedReviews.begin(); it != evaluatedReviews.end(); ++it)
+        {
+            outputFile << it->first + ",";
+            outputFile << it->second;
+            outputFile << "\n";
+        }
+        outputFile.close();
+    }
+}
 
 int main()
 {
@@ -131,7 +149,7 @@ int main()
     vector<tuple<map<unsigned long,int>,int> > labeledReviews = ReadLabeledFile(dimensions);
     cout << "Done" << endl ;
 
-    cout << "Calculating Perceptron weights..." << endl ;
+    cout << "Training Perceptron algorithm..." << endl ;
     vector<double> percentronWeights = Perceptron::TrainPerceptron(labeledReviews, dimensions);
     cout << "Done" << endl ;
 
@@ -143,12 +161,7 @@ int main()
     map<string, double> evaluatedReviews = Perceptron::TestPerceptron(percentronWeights, unlabeledReviews);
     cout << "Done" << endl ;
 
-
-    for (map<string, double>::iterator it = evaluatedReviews.begin(); it != evaluatedReviews.end(); ++it)
-    {
-        cout << it->first << endl;
-        cout << it->second << endl;
-    }
+    ToOutputFile(evaluatedReviews);
 
     return 0;
 }

@@ -1,5 +1,6 @@
 bin/
 obj/
 boost/
+output/
 tpreviews.depend
 tpreviews.layout

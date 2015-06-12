@@ -4,7 +4,7 @@
 #include <vector>
 #include <map>
 #include <list>
-#include "PerceptronOutput.h"
+#include <string>
 #include "boost/tuple/tuple.hpp"
 
 class Perceptron{
