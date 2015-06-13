@@ -10,24 +10,26 @@
 #include "boost/tuple/tuple.hpp"
 #include <list>
 #include <map>
+#include <math.h>
 
 
 class NaiveBayes
 {
     public:
         NaiveBayes();
-        void BayesTrain(std::vector<boost::tuple<std::map<unsigned long,int>,int> >X);
-        void BayesTest(std::vector<boost::tuple<std::map<unsigned long,int>,int> >X);
-        std::map<int,float> Resultado();
+        void BayesTrain(std::vector<boost::tuple<std::map<unsigned long,int>,int> >TrainData);
+        void BayesTest(std::vector<boost::tuple<std::map<unsigned long,int>,std::string> >TestData);
+        std::map<std::string,double> Resultado();
+        double Sigmoid(double num);
         virtual ~NaiveBayes();
     protected:
     private:
         std::map<unsigned long,int> hashespos;
         std::map<unsigned long,int> hashesneg;
-        int pos;
-        int neg;
-        int total;
-        std::map<int,float> resultado;
+        double pos;
+        double neg;
+        double total;
+        std::map<std::string,double> resultado;
 };
 
 #endif // NAIVEBAYES_H
