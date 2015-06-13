@@ -78,7 +78,7 @@ void NaiveBayes::BayesTest(std::vector<boost::tuple<std::map<unsigned long,int>,
         //std::cout<<"cantparpositivos: "<<cantparpositivos<<" "<<"probreviewpos: "<<probreviewpos<<" "<<"probreview: "<<probreview<<std::endl;
         probnegreview = probreviewneg+probneg;
         probposreview = probreviewpos+probpos;
-        aux = Sigmoid(probposreview- probnegreview);
+        aux = Sigmoid(probposreview - probnegreview);
         if (aux > 0.0001)
             resultado[ID] = aux;
         else
