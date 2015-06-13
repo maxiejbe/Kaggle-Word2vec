@@ -47,7 +47,7 @@ vector<tuple<map<unsigned long,int>,int> > ReadLabeledFile(long dimensions){
     else
     {
         //single words and phrases of two words
-        HashingTrick* hashingTrick = new HashingTrick(dimensions, 1, 1);
+        HashingTrick* hashingTrick = new HashingTrick(dimensions, 1, 2);
 
         bool firstElement = true;
         while(labeledReview.FromFileLine(&labeledReadFile))
@@ -92,7 +92,7 @@ vector<tuple<map<unsigned long,int>,string> > ReadUnlabeledFile(long dimensions)
     else
     {
         //single words and phrases of two words
-        HashingTrick* hashingTrick = new HashingTrick(dimensions, 1, 1);
+        HashingTrick* hashingTrick = new HashingTrick(dimensions, 1, 2);
 
         bool firstElement = true;
         while(unlabeledReview.FromFileLine(&unlabeledReadFile))

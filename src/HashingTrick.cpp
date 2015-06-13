@@ -13,14 +13,14 @@ HashingTrick::HashingTrick(unsigned long dimensions, int minWords, int maxWords)
 map<unsigned long, int> HashingTrick::Hash(vector<string> stringReview){
     map<unsigned long, int> hashedReview;
 
-    for(int i=this->minWords;i<=maxWords;i++){
-        for(int j=0; j<stringReview.size();j++){
-
+    for(int j=0; j<stringReview.size();j++){
+        for(int i=this->minWords;i<=this->maxWords;i++)
+        {
             string toHash;
-            for(int n=0;n<=i;n++){
+            for(int n=0;n<i;n++){
                 if((j+n) < stringReview.size()){
-                    toHash += (stringReview[j+n]);
-                    if(n!=i) toHash += " ";
+                    toHash += stringReview[j+n];
+                    if(n != i-1) toHash += " ";
                 }
             }
             unsigned long hashValue = hash_value(toHash) % this->dimensions;
@@ -30,6 +30,7 @@ map<unsigned long, int> HashingTrick::Hash(vector<string> stringReview){
             }
             hashedReview[hashValue]++;
         }
+        break;
     }
     return hashedReview;
 }

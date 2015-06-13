@@ -15,6 +15,7 @@ class StringCleaner
         static void CleanNonLetters(std::string* toClean);
         static void CleanApostrophes(std::string* toClean);
         static void ToLowerCase(std::string* toClean);
+        static void Trim(std::string* toClean);
         virtual ~StringCleaner();
     protected:
     private:
