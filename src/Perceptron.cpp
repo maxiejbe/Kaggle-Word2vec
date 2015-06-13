@@ -3,8 +3,8 @@
 using namespace std;
 using namespace boost;
 
-const double LEARNINGRATE = 0.05;
-const int MAXLOOP = 100;
+const double LEARNINGRATE = 0.1;
+const int MAXLOOP = 50;
 
 Perceptron::Perceptron(unsigned long dimensions)
 {

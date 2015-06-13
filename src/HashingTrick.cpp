@@ -20,7 +20,8 @@ map<unsigned long, int> HashingTrick::Hash(vector<string> stringReview){
             for(int n=0;n<i;n++){
                 if((j+n) < stringReview.size()){
                     toHash += stringReview[j+n];
-                    if(n != i-1) toHash += " ";
+                    //uncomment this line if you want to add a separation space between n-grams
+                    //if(n != i-1) toHash += " ";
                 }
             }
             unsigned long hashValue = hash_value(toHash) % this->dimensions;
@@ -30,7 +31,6 @@ map<unsigned long, int> HashingTrick::Hash(vector<string> stringReview){
             }
             hashedReview[hashValue]++;
         }
-        break;
     }
     return hashedReview;
 }

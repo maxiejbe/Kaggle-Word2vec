@@ -47,7 +47,7 @@ vector<tuple<map<unsigned long,int>,int> > ReadLabeledFile(long dimensions){
     else
     {
         //single words and phrases of two words
-        HashingTrick* hashingTrick = new HashingTrick(dimensions, 1, 2);
+        HashingTrick* hashingTrick = new HashingTrick(dimensions, 1, 1);
 
         bool firstElement = true;
         while(labeledReview.FromFileLine(&labeledReadFile))
@@ -92,7 +92,7 @@ vector<tuple<map<unsigned long,int>,string> > ReadUnlabeledFile(long dimensions)
     else
     {
         //single words and phrases of two words
-        HashingTrick* hashingTrick = new HashingTrick(dimensions, 1, 2);
+        HashingTrick* hashingTrick = new HashingTrick(dimensions, 1, 1);
 
         bool firstElement = true;
         while(unlabeledReview.FromFileLine(&unlabeledReadFile))
@@ -145,7 +145,7 @@ void ToOutputFile(map<string, double> evaluatedReviews){
 
 int main()
 {
-    unsigned long dimensions = 4000000;
+    unsigned long dimensions = 2000000;
 
     cout << "Processing labeled reviews..." << endl ;
     vector<tuple<map<unsigned long,int>,int> > labeledReviews = ReadLabeledFile(dimensions);
