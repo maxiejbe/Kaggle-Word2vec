@@ -55,8 +55,8 @@ void NaiveBayes::BayesTest(std::vector<boost::tuple<std::map<unsigned long,int>,
     double probreview = 0; //Probabilidad de que el review se encuentre
     double probreviewpos = 0; //Probabilidad de que el review se encuentre dado que el label es positivo
     double probreviewneg = 0; //Probabilidad de que el review se encuentre dado que el label es negativo
-    double probposreview = 1; //Probabilidad de que sea positivo dado un review
-    double probnegreview = 1; //Probabilidad de que sea negativo dado un review
+    double probposreview; //Probabilidad de que sea positivo dado un review
+    double probnegreview; //Probabilidad de que sea negativo dado un review
     double aux;
 
     for(i=0;i<boost::size(TestData);i++){
@@ -70,10 +70,16 @@ void NaiveBayes::BayesTest(std::vector<boost::tuple<std::map<unsigned long,int>,
                 cantidadparcial = cantparnegativos + cantparpositivos;
             if (cantparnegativos != 0)
                 probreviewneg = probreviewneg + log(cantparnegativos/neg);
+            else
+                probreviewneg = probreviewneg + log(1/neg);
             if (cantparpositivos != 0)
                 probreviewpos = probreviewpos + log(cantparpositivos/pos);
+            else
+                probreviewpos = probreviewpos + log(1/pos);
             if (cantidadparcial !=0)
                 probreview = probreview + log(cantidadparcial/total);
+            else
+                probreview = probreview + log(1/total);
         }
         //std::cout<<"cantparpositivos: "<<cantparpositivos<<" "<<"probreviewpos: "<<probreviewpos<<" "<<"probreview: "<<probreview<<std::endl;
         probnegreview = probreviewneg+probneg;
@@ -84,11 +90,9 @@ void NaiveBayes::BayesTest(std::vector<boost::tuple<std::map<unsigned long,int>,
         else
             resultado[ID] = 0;
         //std::cout<<"probposreview: "<<probposreview<<std::endl;
-        probreview = 1;
-        probreviewpos = 1;
-        probreviewneg = 1;
-        probposreview = 1;
-        probnegreview = 1;
+        probreview = 0;
+        probreviewpos = 0;
+        probreviewneg = 0;
 
     }
 
