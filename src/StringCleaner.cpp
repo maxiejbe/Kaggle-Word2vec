@@ -41,12 +41,18 @@ void StringCleaner::ToLowerCase(string* toClean)
     algorithm::to_lower(*toClean);
 }
 
+void StringCleaner::Trim(string* toClean){
+    *toClean = trim_left_copy(*toClean);
+    *toClean = trim_right_copy(*toClean);
+}
+
 void StringCleaner::CompleteClean(string* toClean){
     CleanHTML(toClean);
     CleanNonLetters(toClean);
     CleanApostrophes(toClean);
     ToLowerCase(toClean);
     CollapseWhiteSpaces(toClean);
+    Trim(toClean);
 }
 
 

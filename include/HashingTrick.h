@@ -13,12 +13,14 @@
 class HashingTrick
 {
     public:
-        HashingTrick(unsigned long dimensions);
+        HashingTrick(unsigned long dimensions, int minWords, int maxWords);
         std::map<unsigned long, int> Hash(std::vector<std::string> stringVector);
         virtual ~HashingTrick();
     protected:
     private:
         unsigned long dimensions;
+        int minWords;
+        int maxWords;
 };
 
 #endif // HASHINGTRICK_H

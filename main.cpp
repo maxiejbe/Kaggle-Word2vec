@@ -46,7 +46,8 @@ vector<tuple<map<unsigned long,int>,int> > ReadLabeledFile(long dimensions){
     }
     else
     {
-        HashingTrick* hashingTrick = new HashingTrick(dimensions);
+        //single words and phrases of two words
+        HashingTrick* hashingTrick = new HashingTrick(dimensions, 1, 1);
 
         bool firstElement = true;
         while(labeledReview.FromFileLine(&labeledReadFile))
@@ -90,7 +91,8 @@ vector<tuple<map<unsigned long,int>,string> > ReadUnlabeledFile(long dimensions)
     }
     else
     {
-        HashingTrick* hashingTrick = new HashingTrick(dimensions);
+        //single words and phrases of two words
+        HashingTrick* hashingTrick = new HashingTrick(dimensions, 1, 1);
 
         bool firstElement = true;
         while(unlabeledReview.FromFileLine(&unlabeledReadFile))
@@ -143,25 +145,29 @@ void ToOutputFile(map<string, double> evaluatedReviews){
 
 int main()
 {
-    long dimensions = 20;
+    unsigned long dimensions = 2000000;
 
     cout << "Processing labeled reviews..." << endl ;
     vector<tuple<map<unsigned long,int>,int> > labeledReviews = ReadLabeledFile(dimensions);
-    cout << "Done" << endl ;
-
-    cout << "Training Perceptron algorithm..." << endl ;
-    vector<double> percentronWeights = Perceptron::TrainPerceptron(labeledReviews, dimensions);
     cout << "Done" << endl ;
 
     cout << "Processing unlabeled reviews..." << endl ;
     vector<tuple<map<unsigned long,int>,string> > unlabeledReviews = ReadUnlabeledFile(dimensions);
     cout << "Done" << endl ;
 
+    Perceptron* perceptron = new Perceptron(dimensions);
+
+    cout << "Training Perceptron algorithm..." << endl ;
+    perceptron->TrainPerceptron(labeledReviews);
+    cout << "Done" << endl ;
+
     cout << "Calculating Perceptron probabilities..." << endl ;
-    map<string, double> evaluatedReviews = Perceptron::TestPerceptron(percentronWeights, unlabeledReviews);
+    map<string, double> evaluatedReviews = perceptron->TestPerceptron(unlabeledReviews);
     cout << "Done" << endl ;
 
     ToOutputFile(evaluatedReviews);
+
+    delete perceptron;
 
     return 0;
 }
