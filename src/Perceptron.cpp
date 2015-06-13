@@ -3,8 +3,8 @@
 using namespace std;
 using namespace boost;
 
-const double LEARNINGRATE = 0.1;
-const int MAXLOOP = 50;
+const double LEARNINGRATE = 0.05;
+const int MAXLOOP = 100;
 
 Perceptron::Perceptron(unsigned long dimensions)
 {
@@ -35,21 +35,22 @@ void Perceptron::UpdateWeights(int error, map<unsigned long,int> hashedReview){
     }
 }
 
-void Perceptron::TrainPerceptron(vector < tuple < map<unsigned long,int >,int > > reviews){
+void Perceptron::TrainPerceptron(vector<tuple<map<unsigned long,int>,int> > reviews){
     int errorCounter = 0;
     int loopCounter = 0;
 
     while (true){
-        for (int i=0; i < reviews.size() ; i++){
 
+        for (vector<tuple<map<unsigned long,int >,int> >::iterator revIterator = reviews.begin(); revIterator != reviews.end(); ++revIterator)
+        {
             //product between weight and review: 1 or 0 depending on the result
-            int resultado = DotProduct(get<0>(reviews[i])) > 0.5 ? 1 : 0;
+            int resultado = DotProduct(get<0>(*revIterator)) > 0.5 ? 1 : 0;
 
             //if error calculation is != 0
-            int error = get<1>(reviews[i]) - resultado;
+            int error = get<1>(*revIterator) - resultado;
             if (error != 0 ){
                 errorCounter ++;
-                UpdateWeights(error, get<0>(reviews[i]));
+                UpdateWeights(error, get<0>(*revIterator));
             }
         }
         loopCounter++;
