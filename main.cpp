@@ -2,6 +2,7 @@
 #include "include/UnlabeledReview.h"
 #include "include/LabeledReview.h"
 #include "include/Perceptron.h"
+#include "include/NaiveBayes.h"
 #include "include/HashingTrick.h"
 #include <boost/algorithm/string.hpp>
 #include "boost/tuple/tuple.hpp"
@@ -36,9 +37,6 @@ map<string, int> ReadStopWords(){
 
 vector<tuple<map<unsigned long,int>,int> > ReadLabeledFile(long dimensions){
     vector<tuple<map<unsigned long,int>,int> > labeledReviews;
-    LabeledReview labeledReview;
-
-    map<string, int> stopWords = ReadStopWords();
 
     ifstream labeledReadFile("data/labeledTrainData.tsv");
     if(!labeledReadFile.is_open() ){
@@ -46,6 +44,9 @@ vector<tuple<map<unsigned long,int>,int> > ReadLabeledFile(long dimensions){
     }
     else
     {
+        LabeledReview labeledReview;
+        map<string, int> stopWords = ReadStopWords();
+
         //single words and phrases of two words
         HashingTrick* hashingTrick = new HashingTrick(dimensions, 1, 1);
 
@@ -124,7 +125,7 @@ vector<tuple<map<unsigned long,int>,string> > ReadUnlabeledFile(long dimensions)
     return unlabeledReviews;
 }
 
-void ToOutputFile(map<string, double> evaluatedReviews){
+void ToOutputFile(map<string, double>* evaluatedReviews){
     ofstream outputFile ("output/generatedFile.csv");
     if(!outputFile.is_open() ){
         cout << "Cannot read the output data file." << endl ;
@@ -133,7 +134,7 @@ void ToOutputFile(map<string, double> evaluatedReviews){
     {
         outputFile << "\"id\",\"sentiment\"\n";
 
-        for (map<string, double>::iterator it = evaluatedReviews.begin(); it != evaluatedReviews.end(); ++it)
+        for (map<string, double>::iterator it = evaluatedReviews->begin(); it != evaluatedReviews->end(); ++it)
         {
             outputFile << it->first + ",";
             outputFile << it->second;
@@ -143,8 +144,43 @@ void ToOutputFile(map<string, double> evaluatedReviews){
     }
 }
 
-int main()
-{
+map<string, double> RunPerceptron(vector<tuple<map<unsigned long,int>,int> >* labeledReviews,
+                                  vector<tuple<map<unsigned long,int>,string> >* unlabeledReviews,
+                                  unsigned long dimensions){
+    Perceptron* perceptron = new Perceptron(dimensions);
+
+    cout << "Training Perceptron algorithm..." << endl ;
+    perceptron->TrainPerceptron(*labeledReviews);
+    cout << "Done" << endl ;
+
+    cout << "Calculating Perceptron probabilities..." << endl ;
+    map<string, double> perceptronResults = perceptron->TestPerceptron(*unlabeledReviews);
+    cout << "Done" << endl ;
+
+    delete perceptron;
+
+    return perceptronResults;
+}
+
+map<string, double> RunBayes(vector<tuple<map<unsigned long,int>,int> >* labeledReviews,
+                                  vector<tuple<map<unsigned long,int>,string> >* unlabeledReviews){
+    NaiveBayes* bayes = new NaiveBayes();
+
+    cout << "Training Naive Bayes algorithm..." << endl ;
+    bayes->BayesTrain(*labeledReviews);
+    cout << "Done" << endl ;
+
+    cout << "Calculating Naive Bayes probabilities..." << endl ;
+    bayes->BayesTest(*unlabeledReviews);
+    map<string, double> bayesResults = bayes->Resultado();
+    cout << "Done" << endl ;
+
+    delete bayes;
+
+    return bayesResults;
+}
+
+int main(){
     unsigned long dimensions = 2000000;
 
     cout << "Processing labeled reviews..." << endl ;
@@ -155,19 +191,23 @@ int main()
     vector<tuple<map<unsigned long,int>,string> > unlabeledReviews = ReadUnlabeledFile(dimensions);
     cout << "Done" << endl ;
 
-    Perceptron* perceptron = new Perceptron(dimensions);
+    map<string, double> perceptronResults = RunPerceptron(&labeledReviews, &unlabeledReviews, dimensions);
+    map<string, double> bayesResults = RunBayes(&labeledReviews, &unlabeledReviews);
 
-    cout << "Training Perceptron algorithm..." << endl ;
-    perceptron->TrainPerceptron(labeledReviews);
+    double perceptronWeight = 1;
+    double bayesWeigth = 0;
+
+    cout << "Merging calculated probabilities..." << endl ;
+
+    map<string, double> completeResults;
+    for (vector<tuple<map<unsigned long,int>,string> >::iterator revIterator = unlabeledReviews.begin(); revIterator != unlabeledReviews.end(); ++revIterator){
+        string reviewId = get<1>(*revIterator);
+        completeResults[reviewId] = perceptronWeight * perceptronResults[reviewId] + bayesWeigth * bayesResults[reviewId];
+    }
+
     cout << "Done" << endl ;
 
-    cout << "Calculating Perceptron probabilities..." << endl ;
-    map<string, double> evaluatedReviews = perceptron->TestPerceptron(unlabeledReviews);
-    cout << "Done" << endl ;
-
-    ToOutputFile(evaluatedReviews);
-
-    delete perceptron;
+    ToOutputFile(&completeResults);
 
     return 0;
 }
