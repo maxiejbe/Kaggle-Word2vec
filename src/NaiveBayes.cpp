@@ -1,5 +1,7 @@
 #include "NaiveBayes.h"
 
+using namespace std;
+using namespace boost;
 
 NaiveBayes::NaiveBayes()
 {
@@ -10,21 +12,17 @@ NaiveBayes::NaiveBayes()
 }
 
 double NaiveBayes::Sigmoid(double num){
-        return 1/(1+exp(num));
-
+    return 1/(1+exp(num));
 }
 
-void NaiveBayes::BayesTrain(std::vector<boost::tuple<std::map<unsigned long,int>,int> > TrainData){
+void NaiveBayes::TrainBayes(vector<tuple<map<unsigned long,int>,int> > reviews){
     unsigned long i;
-    //boost::tuple <std::map<unsigned long,int>,int> tuplaAux;
-    std::map<unsigned long,int> mapAux;
-    std::map<unsigned long,int>::iterator it;
+    map<unsigned long,int> mapAux;
+    map<unsigned long,int>::iterator it;
 
-
-    for(i=0;i<boost::size(TrainData);i++){
-        //tuplaAux = TrainData[i];
-        mapAux = boost::tuples::get<0>(TrainData[i]);
-        if (boost::tuples::get<1>(TrainData[i])==1){
+    for(i=0;i<reviews.size();i++){
+        mapAux = get<0>(reviews[i]);
+        if (tuples::get<1>(reviews[i])==1){
             pos++;
             for(it = mapAux.begin();it!=mapAux.end();++it)
                 hashespos[it->first]+=it->second;
@@ -39,13 +37,13 @@ void NaiveBayes::BayesTrain(std::vector<boost::tuple<std::map<unsigned long,int>
 }
 
 
-void NaiveBayes::BayesTest(std::vector<boost::tuple<std::map<unsigned long,int>,std::string> > TestData){
+map<string,double> NaiveBayes::TestBayes(vector<tuple<map<unsigned long,int>,string> > reviewsToPredict){
 
-    std::string ID;
+    string reviewId;
     unsigned long i;
-    boost::tuple <std::map<unsigned long,int>,std::string> tuplaAux;
-    std::map<unsigned long,int> mapAux;
-    std::map<unsigned long,int>::iterator it;
+    tuple<map<unsigned long,int>,string> tuplaAux;
+    map<unsigned long,int> mapAux;
+    map<unsigned long,int>::iterator it;
 
     double cantparpositivos;
     double cantparnegativos;
@@ -59,10 +57,9 @@ void NaiveBayes::BayesTest(std::vector<boost::tuple<std::map<unsigned long,int>,
     double probnegreview; //Probabilidad de que sea negativo dado un review
     double aux;
 
-    for(i=0;i<boost::size(TestData);i++){
-        //tuplaAux = TestData[i];
-        mapAux = boost::tuples::get<0>(TestData[i]);
-        ID = boost::tuples::get<1>(TestData[i]);
+    for(i=0;i<reviewsToPredict.size();i++){
+        mapAux = get<0>(reviewsToPredict[i]);
+        reviewId = get<1>(reviewsToPredict[i]);
         for (it = mapAux.begin();it!=mapAux.end();++it){
             cantparnegativos = hashesneg[it->first];
             cantparpositivos = hashespos[it->first];
@@ -86,21 +83,16 @@ void NaiveBayes::BayesTest(std::vector<boost::tuple<std::map<unsigned long,int>,
         probposreview = probreviewpos+probpos;
         aux = Sigmoid(probposreview - probnegreview);
         if (aux > 0.0001)
-            resultado[ID] = aux;
+            resultado[reviewId] = aux;
         else
-            resultado[ID] = 0;
+            resultado[reviewId] = 0;
         //std::cout<<"probposreview: "<<probposreview<<std::endl;
         probreview = 0;
         probreviewpos = 0;
         probreviewneg = 0;
 
     }
-
-}
-
-std::map<std::string,double> NaiveBayes::Resultado(){
     return resultado;
-
 }
 
 NaiveBayes::~NaiveBayes()

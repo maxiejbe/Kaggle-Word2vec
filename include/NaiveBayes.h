@@ -12,14 +12,12 @@
 #include <map>
 #include <math.h>
 
-
 class NaiveBayes
 {
     public:
         NaiveBayes();
-        void BayesTrain(std::vector<boost::tuple<std::map<unsigned long,int>,int> >TrainData);
-        void BayesTest(std::vector<boost::tuple<std::map<unsigned long,int>,std::string> >TestData);
-        std::map<std::string,double> Resultado();
+        void TrainBayes(std::vector<boost::tuple<std::map<unsigned long,int>,int> > reviews);
+        std::map<std::string,double> TestBayes(std::vector<boost::tuple<std::map<unsigned long,int>,std::string> > reviewsToPredict);
         double Sigmoid(double num);
         virtual ~NaiveBayes();
     protected:

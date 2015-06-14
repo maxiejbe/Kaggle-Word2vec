@@ -167,12 +167,11 @@ map<string, double> RunBayes(vector<tuple<map<unsigned long,int>,int> >* labeled
     NaiveBayes* bayes = new NaiveBayes();
 
     cout << "Training Naive Bayes algorithm..." << endl ;
-    bayes->BayesTrain(*labeledReviews);
+    bayes->TrainBayes(*labeledReviews);
     cout << "Done" << endl ;
 
     cout << "Calculating Naive Bayes probabilities..." << endl ;
-    bayes->BayesTest(*unlabeledReviews);
-    map<string, double> bayesResults = bayes->Resultado();
+    map<string, double> bayesResults = bayes->TestBayes(*unlabeledReviews);
     cout << "Done" << endl ;
 
     delete bayes;
