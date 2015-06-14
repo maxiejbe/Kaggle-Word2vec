@@ -11,6 +11,10 @@ class LabeledReview: public Review
         void SetSentiment(std::string value);
         LabeledReview();
         virtual ~LabeledReview();
+
+        boost::tuple<std::map<unsigned long, int>, int> ToReviewHashTuple(std::map<std::string, int>* excludeWords,
+                                                              HashingTrick* hashingTrick);
+
     protected:
         virtual bool ReadCompleteLine(std::stringstream* strstream);
 

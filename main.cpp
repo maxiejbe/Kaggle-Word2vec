@@ -4,9 +4,6 @@
 #include "include/Perceptron.h"
 #include "include/NaiveBayes.h"
 #include "include/HashingTrick.h"
-#include <boost/algorithm/string.hpp>
-#include "boost/tuple/tuple.hpp"
-#include "boost/lexical_cast.hpp"
 #include <list>
 #include <map>
 
@@ -35,7 +32,8 @@ map<string, int> ReadStopWords(){
     return stopWords;
 }
 
-vector<tuple<map<unsigned long,int>,int> > ReadLabeledFile(long dimensions){
+vector<tuple<map<unsigned long,int>,int> > ReadLabeledFile(long dimensions,
+                                                           HashingTrick* hashingTrick, map<string, int>* stopWords){
     vector<tuple<map<unsigned long,int>,int> > labeledReviews;
 
     ifstream labeledReadFile("data/labeledTrainData.tsv");
@@ -45,10 +43,6 @@ vector<tuple<map<unsigned long,int>,int> > ReadLabeledFile(long dimensions){
     else
     {
         LabeledReview labeledReview;
-        map<string, int> stopWords = ReadStopWords();
-
-        //single words and phrases of two words
-        HashingTrick* hashingTrick = new HashingTrick(dimensions, 1, 1);
 
         bool firstElement = true;
         while(labeledReview.FromFileLine(&labeledReadFile))
@@ -57,34 +51,16 @@ vector<tuple<map<unsigned long,int>,int> > ReadLabeledFile(long dimensions){
                 firstElement = false;
                 continue;
             }
-            //let me explain myself, I need to get a vector of words + sentiment as a tuple
-            vector<string> reviewVector;
-            string reviewString = labeledReview.GetReview();
-            boost::split(reviewVector,reviewString,boost::is_any_of(" "));
-
-            //Diff between reviewVector and stopWords and generate the tuple
-            vector<string> cleanedVector;
-            for (vector<string>::iterator it = reviewVector.begin(); it != reviewVector.end(); ++it){
-                if(stopWords[(*it)] == 1) continue;
-                cleanedVector.push_back(*it);
-            }
-            map<unsigned long, int> hashedReview = hashingTrick->Hash(cleanedVector);
-            tuple<map<unsigned long, int>, int> labeledReviewTuple = make_tuple(hashedReview, lexical_cast<int>(labeledReview.GetSentiment()));
-            labeledReviews.push_back(labeledReviewTuple);
+            labeledReviews.push_back(labeledReview.ToReviewHashTuple(stopWords, hashingTrick));
         }
-
-        delete hashingTrick;
         labeledReadFile.close();
     }
-
     return labeledReviews;
 }
 
-vector<tuple<map<unsigned long,int>,string> > ReadUnlabeledFile(long dimensions){
+vector<tuple<map<unsigned long,int>,string> > ReadUnlabeledFile(long dimensions,
+                                                                HashingTrick* hashingTrick, map<string, int>* stopWords){
     vector<tuple<map<unsigned long,int>,string> > unlabeledReviews;
-    UnlabeledReview unlabeledReview;
-
-    map<string, int> stopWords = ReadStopWords();
 
     ifstream unlabeledReadFile("data/testData.tsv");
     if(!unlabeledReadFile.is_open() ){
@@ -92,8 +68,7 @@ vector<tuple<map<unsigned long,int>,string> > ReadUnlabeledFile(long dimensions)
     }
     else
     {
-        //single words and phrases of two words
-        HashingTrick* hashingTrick = new HashingTrick(dimensions, 1, 1);
+        UnlabeledReview unlabeledReview;
 
         bool firstElement = true;
         while(unlabeledReview.FromFileLine(&unlabeledReadFile))
@@ -102,26 +77,10 @@ vector<tuple<map<unsigned long,int>,string> > ReadUnlabeledFile(long dimensions)
                 firstElement = false;
                 continue;
             }
-            //let me explain myself, I need to get a vector of words + sentiment as a tuple
-            vector<string> reviewVector;
-            string reviewString = unlabeledReview.GetReview();
-            boost::split(reviewVector,reviewString,boost::is_any_of(" "));
-
-            //Diff between reviewVector and stopWords and generate the tuple
-            vector<string> cleanedVector;
-            for (vector<string>::iterator it = reviewVector.begin(); it != reviewVector.end(); ++it){
-                if(stopWords[(*it)] == 1) continue;
-                cleanedVector.push_back(*it);
-            }
-            map<unsigned long, int> hashedReview = hashingTrick->Hash(cleanedVector);
-            tuple<map<unsigned long, int>, string> unlabeledReviewTuple = make_tuple(hashedReview, unlabeledReview.GetId());
-            unlabeledReviews.push_back(unlabeledReviewTuple);
+            unlabeledReviews.push_back(unlabeledReview.ToReviewHashTuple(stopWords, hashingTrick));
         }
-
-        delete hashingTrick;
         unlabeledReadFile.close();
     }
-
     return unlabeledReviews;
 }
 
@@ -182,19 +141,26 @@ map<string, double> RunBayes(vector<tuple<map<unsigned long,int>,int> >* labeled
 int main(){
     unsigned long dimensions = 2000000;
 
+    //single words and phrases of two words
+    HashingTrick* hashingTrick = new HashingTrick(dimensions, 1, 1);
+
+    map<string, int> stopWords = ReadStopWords();
+
     cout << "Processing labeled reviews..." << endl ;
-    vector<tuple<map<unsigned long,int>,int> > labeledReviews = ReadLabeledFile(dimensions);
+    vector<tuple<map<unsigned long,int>,int> > labeledReviews = ReadLabeledFile(dimensions, hashingTrick, &stopWords);
     cout << "Done" << endl ;
 
     cout << "Processing unlabeled reviews..." << endl ;
-    vector<tuple<map<unsigned long,int>,string> > unlabeledReviews = ReadUnlabeledFile(dimensions);
+    vector<tuple<map<unsigned long,int>,string> > unlabeledReviews = ReadUnlabeledFile(dimensions, hashingTrick, &stopWords);
     cout << "Done" << endl ;
+
+    delete hashingTrick;
 
     map<string, double> perceptronResults = RunPerceptron(&labeledReviews, &unlabeledReviews, dimensions);
     map<string, double> bayesResults = RunBayes(&labeledReviews, &unlabeledReviews);
 
-    double perceptronWeight = 1;
-    double bayesWeigth = 0;
+    double perceptronWeight = 0;
+    double bayesWeigth = 1;
 
     cout << "Merging calculated probabilities..." << endl ;
 

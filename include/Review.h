@@ -3,8 +3,15 @@
 
 #include <string>
 #include <fstream>
+#include <vector>
+#include <map>
 #include <iostream>
 #include <sstream>
+#include <boost/algorithm/string.hpp>
+#include "boost/tuple/tuple.hpp"
+#include "boost/lexical_cast.hpp"
+#include <map>
+#include "HashingTrick.h"
 
 class Review
 {
@@ -16,6 +23,8 @@ class Review
         void SetId(std::string value);
         std::string GetReview();
         void SetReview(std::string value);
+
+        std::vector<std::string> ToVector(std::map<std::string, int>* excludeWords);
 
         bool FromFileLine(std::ifstream* str);
 

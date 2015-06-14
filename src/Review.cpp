@@ -2,6 +2,7 @@
 #include "StringCleaner.h"
 
 using namespace std;
+using namespace boost;
 
 Review::Review()
 {
@@ -22,6 +23,20 @@ string Review::GetReview(){
 
 void Review::SetReview(string value){
     this->review = value;
+}
+
+vector<string> Review::ToVector(map<string, int>* excludeWords){
+    //let me explain myself, I need to get a vector of words + sentiment as a tuple
+    vector<string> reviewVector;
+    boost::split(reviewVector,this->review,boost::is_any_of(" "));
+
+    //Diff between reviewVector and excludeWords and generate the tuple
+    vector<string> cleanedVector;
+    for (vector<string>::iterator it = reviewVector.begin(); it != reviewVector.end(); ++it){
+        if((*excludeWords)[*it] == 1) continue;
+        cleanedVector.push_back(*it);
+    }
+    return cleanedVector;
 }
 
 bool Review::FromFileLine(ifstream* str){

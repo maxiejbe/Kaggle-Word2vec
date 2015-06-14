@@ -11,6 +11,10 @@ class UnlabeledReview: public Review
         virtual ~UnlabeledReview();
 
         virtual bool ReadCompleteLine(std::stringstream* strstream);
+
+        boost::tuple<std::map<unsigned long, int>, std::string> ToReviewHashTuple(std::map<std::string, int>* excludeWords,
+                                                              HashingTrick* hashingTrick);
+
     protected:
     private:
 };
