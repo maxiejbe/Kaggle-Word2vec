@@ -32,35 +32,28 @@ map<string, int> ReadStopWords(){
     return stopWords;
 }
 
-vector<tuple<map<unsigned long,int>,int> > ReadLabeledFile(long dimensions,
+vector<tuple<map<unsigned long,int>,int> > HashLabeledFile(vector<LabeledReview>* labeledReviews,
                                                            HashingTrick* hashingTrick, map<string, int>* stopWords){
-    vector<tuple<map<unsigned long,int>,int> > labeledReviews;
-
-    ifstream labeledReadFile("data/labeledTrainData.tsv");
-    if(!labeledReadFile.is_open() ){
-        cout << "Could not read the labeled train data file." << endl ;
-    }
-    else
+    vector<tuple<map<unsigned long,int>,int> > labeledReviewsHash;
+    for (vector<LabeledReview>::iterator it = labeledReviews->begin(); it != labeledReviews->end(); ++it)
     {
-        LabeledReview labeledReview;
-
-        bool firstElement = true;
-        while(labeledReview.FromFileLine(&labeledReadFile))
-        {
-            if(firstElement){
-                firstElement = false;
-                continue;
-            }
-            labeledReviews.push_back(labeledReview.ToReviewHashTuple(stopWords, hashingTrick));
-        }
-        labeledReadFile.close();
+        labeledReviewsHash.push_back(it->ToReviewHashTuple(stopWords, hashingTrick));
     }
-    return labeledReviews;
+    return labeledReviewsHash;
 }
 
-vector<tuple<map<unsigned long,int>,string> > ReadUnlabeledFile(long dimensions,
+vector<tuple<map<unsigned long,int>,string> > HashUnlabeledFile(vector<UnlabeledReview>* unlabeledReviews,
                                                                 HashingTrick* hashingTrick, map<string, int>* stopWords){
-    vector<tuple<map<unsigned long,int>,string> > unlabeledReviews;
+    vector<tuple<map<unsigned long,int>,string> > unlabeledReviewsHash;
+    for (vector<UnlabeledReview>::iterator it = unlabeledReviews->begin(); it != unlabeledReviews->end(); ++it)
+    {
+        unlabeledReviewsHash.push_back(it->ToReviewHashTuple(stopWords, hashingTrick));
+    }
+    return unlabeledReviewsHash;
+}
+
+vector<UnlabeledReview> ReadUnlabeledFile(){
+    vector<UnlabeledReview> unlabeledReviews;
 
     ifstream unlabeledReadFile("data/testData.tsv");
     if(!unlabeledReadFile.is_open() ){
@@ -77,11 +70,36 @@ vector<tuple<map<unsigned long,int>,string> > ReadUnlabeledFile(long dimensions,
                 firstElement = false;
                 continue;
             }
-            unlabeledReviews.push_back(unlabeledReview.ToReviewHashTuple(stopWords, hashingTrick));
+            unlabeledReviews.push_back(unlabeledReview);
         }
         unlabeledReadFile.close();
     }
     return unlabeledReviews;
+}
+
+vector<LabeledReview> ReadLabeledFile(){
+    vector<LabeledReview> labeledReviews;
+
+    ifstream labeledReadFile("data/labeledTrainData.tsv");
+    if(!labeledReadFile.is_open() ){
+        cout << "Could not read the labeled train data file." << endl ;
+    }
+    else
+    {
+        LabeledReview labeledReview;
+
+        bool firstElement = true;
+        while(labeledReview.FromFileLine(&labeledReadFile))
+        {
+            if(firstElement){
+                firstElement = false;
+                continue;
+            }
+            labeledReviews.push_back(labeledReview);
+        }
+        labeledReadFile.close();
+    }
+    return labeledReviews;
 }
 
 void ToOutputFile(map<string, double>* evaluatedReviews){
@@ -139,33 +157,59 @@ map<string, double> RunBayes(vector<tuple<map<unsigned long,int>,int> >* labeled
 }
 
 int main(){
-    unsigned long dimensions = 2000000;
-
-    //single words and phrases of two words
-    HashingTrick* hashingTrick = new HashingTrick(dimensions, 1, 1);
+    unsigned long dimensions = 33554432;
 
     map<string, int> stopWords = ReadStopWords();
 
-    cout << "Processing labeled reviews..." << endl ;
-    vector<tuple<map<unsigned long,int>,int> > labeledReviews = ReadLabeledFile(dimensions, hashingTrick, &stopWords);
+    cout << "Reading labeled reviews..." << endl ;
+    vector<LabeledReview> labeledReviews = ReadLabeledFile();
     cout << "Done" << endl ;
 
-    cout << "Processing unlabeled reviews..." << endl ;
-    vector<tuple<map<unsigned long,int>,string> > unlabeledReviews = ReadUnlabeledFile(dimensions, hashingTrick, &stopWords);
+    cout << "Reading unlabeled reviews..." << endl ;
+    vector<UnlabeledReview> unlabeledReviews = ReadUnlabeledFile();
     cout << "Done" << endl ;
 
-    delete hashingTrick;
+    HashingTrick* perceptronHashingTrick = new HashingTrick(dimensions, 1, 2);
 
-    map<string, double> perceptronResults = RunPerceptron(&labeledReviews, &unlabeledReviews, dimensions);
-    map<string, double> bayesResults = RunBayes(&labeledReviews, &unlabeledReviews);
+    cout << "Hashing labeled reviews for Perceptron..." << endl ;
+    vector<tuple<map<unsigned long,int>,int> > perceptronLabeledReviewsHash;
+    perceptronLabeledReviewsHash = HashLabeledFile(&labeledReviews, perceptronHashingTrick, &stopWords);
+    cout << "Done" << endl ;
 
-    double perceptronWeight = 0;
-    double bayesWeigth = 1;
+    cout << "Hashing unlabeled reviews for Perceptron..." << endl ;
+    vector<tuple<map<unsigned long,int>,string> > perceptronUnlabeledReviewsHash;
+    perceptronUnlabeledReviewsHash = HashUnlabeledFile(&unlabeledReviews, perceptronHashingTrick, &stopWords);
+    cout << "Done" << endl ;
+
+    delete perceptronHashingTrick;
+
+    HashingTrick* bayesHashingTrick = new HashingTrick(dimensions, 2, 2);
+
+    cout << "Hashing labeled reviews for Naive Bayes..." << endl ;
+    vector<tuple<map<unsigned long,int>,int> > bayesLabeledReviewsHash;
+    bayesLabeledReviewsHash = HashLabeledFile(&labeledReviews, bayesHashingTrick, &stopWords);
+    cout << "Done" << endl ;
+
+    cout << "Hashing unlabeled reviews for Naive Bayes..." << endl ;
+    vector<tuple<map<unsigned long,int>,string> > bayesUnlabeledReviewsHash;
+    bayesUnlabeledReviewsHash = HashUnlabeledFile(&unlabeledReviews, bayesHashingTrick, &stopWords);
+
+    cout << "Done" << endl ;
+
+    delete bayesHashingTrick;
+
+    map<string, double> perceptronResults = RunPerceptron(&perceptronLabeledReviewsHash, &perceptronUnlabeledReviewsHash, dimensions);
+    map<string, double> bayesResults = RunBayes(&bayesLabeledReviewsHash, &bayesUnlabeledReviewsHash);
+
+    double perceptronWeight = 0.5;
+    double bayesWeigth = 0.5;
 
     cout << "Merging calculated probabilities..." << endl ;
 
     map<string, double> completeResults;
-    for (vector<tuple<map<unsigned long,int>,string> >::iterator revIterator = unlabeledReviews.begin(); revIterator != unlabeledReviews.end(); ++revIterator){
+    vector<tuple<map<unsigned long,int>,string> >::iterator revIterator;
+    //it's taking perceptron hashes to retrieve ids, but it could be any other. Or even iterate a result map
+    for (revIterator = perceptronUnlabeledReviewsHash.begin(); revIterator != perceptronUnlabeledReviewsHash.end(); ++revIterator){
         string reviewId = get<1>(*revIterator);
         completeResults[reviewId] = perceptronWeight * perceptronResults[reviewId] + bayesWeigth * bayesResults[reviewId];
     }
