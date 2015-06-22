@@ -20,7 +20,7 @@ class Perceptron{
         double DotProduct(std::map<unsigned long,int > hashedReview);
         void UpdateWeights(int error, std::map<unsigned long,int> hashedReview);
 
-        std::vector<double>* weights;
+        std::map<unsigned long,double> weights;
 
 };
 

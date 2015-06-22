@@ -8,12 +8,12 @@ const int MAXLOOP = 50;
 
 Perceptron::Perceptron(unsigned long dimensions)
 {
-    this->weights = new vector<double>(dimensions);
+
 }
 
 Perceptron::~Perceptron()
 {
-    delete this->weights;
+
 }
 
 double Perceptron::DotProduct(map<unsigned long,int > hashedReview){
@@ -22,7 +22,10 @@ double Perceptron::DotProduct(map<unsigned long,int > hashedReview){
     for (map<unsigned long,int>::iterator it = hashedReview.begin(); it != hashedReview.end(); ++it)
     {
         //from the it: first is the word hash value, second is the amount of hashes
-        total += (*this->weights)[it->first] * it->second;
+        if((this->weights).find(it->first) == (this->weights).end()){
+            continue;
+        }
+        total += (this->weights)[it->first] * it->second;
     }
     return total;
 }
@@ -31,7 +34,13 @@ void Perceptron::UpdateWeights(int error, map<unsigned long,int> hashedReview){
     for (map<unsigned long,int>::iterator it = hashedReview.begin(); it != hashedReview.end(); ++it)
     {
         //from the it: first is the word hash value, second is the amount of hashes
-        (*this->weights)[it->first] += LEARNINGRATE * error * it->second;
+
+        //first initialize map position if needed
+        if((this->weights).find(it->first) == (this->weights).end()){
+            (this->weights)[it->first] = 0;
+        }
+        //then update weights
+        (this->weights)[it->first] += LEARNINGRATE * error * it->second;
     }
 }
 
