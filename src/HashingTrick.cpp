@@ -25,7 +25,7 @@ map<unsigned long, int> HashingTrick::Hash(vector<string> stringReview){
                 }
             }
             unsigned long hashValue = hash_value(toHash) % this->dimensions;
-            if(hashedReview[hashValue] == NULL){
+            if(hashedReview.find(hashValue) == hashedReview.end()){
                 hashedReview[hashValue] = 1;
                 continue;
             }

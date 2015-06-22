@@ -157,7 +157,7 @@ map<string, double> RunBayes(vector<tuple<map<unsigned long,int>,int> >* labeled
 }
 
 int main(){
-    unsigned long dimensions = 33554432;
+    unsigned long dimensions = 4000000;
 
     map<string, int> stopWords = ReadStopWords();
 
@@ -201,8 +201,8 @@ int main(){
     map<string, double> perceptronResults = RunPerceptron(&perceptronLabeledReviewsHash, &perceptronUnlabeledReviewsHash, dimensions);
     map<string, double> bayesResults = RunBayes(&bayesLabeledReviewsHash, &bayesUnlabeledReviewsHash);
 
-    double perceptronWeight = 0.5;
-    double bayesWeigth = 0.5;
+    double perceptronWeight = 1;
+    double bayesWeigth = 0;
 
     cout << "Merging calculated probabilities..." << endl ;
 
