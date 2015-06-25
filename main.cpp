@@ -121,6 +121,25 @@ void ToOutputFile(map<string, double>* evaluatedReviews){
     }
 }
 
+void ToOutputFile2(map<string, double>* evaluatedReviews, vector<UnlabeledReview>* unlabeledReview){
+    ofstream outputFile ("output/grupo12_probs.csv");
+    double result;
+    string id;
+
+    if(!outputFile.is_open() ){
+        cout << "Cannot read the output data file." << endl ;
+    }
+    else
+    {
+        for (unsigned int i = 0 ; i< unlabeledReview->size(); i++){
+                id = (*unlabeledReview)[i].GetId();
+                result = (*evaluatedReviews)[id];
+                outputFile << result;
+                outputFile << "\n";
+        }
+    outputFile.close();
+    }
+}
 map<string, double> RunPerceptron(vector<tuple<map<unsigned long,int>,int> >* labeledReviews,
                                   vector<tuple<map<unsigned long,int>,string> >* unlabeledReviews,
                                   unsigned long dimensions){
@@ -157,7 +176,8 @@ map<string, double> RunBayes(vector<tuple<map<unsigned long,int>,int> >* labeled
 }
 
 int main(){
-    unsigned long dimensions = 4000000;
+    unsigned long dimensions = 20000;
+
 
     map<string, int> stopWords = ReadStopWords();
 
@@ -217,6 +237,7 @@ int main(){
     cout << "Done" << endl ;
 
     ToOutputFile(&completeResults);
+    ToOutputFile2(&completeResults, &unlabeledReviews);
 
     return 0;
 }
