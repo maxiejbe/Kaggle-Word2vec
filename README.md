@@ -11,10 +11,11 @@ Follow installation.txt
 Submodules init and update for root and boost folders
 
 ##Context
-UBA (Buenos Aires University) 
+FIUBA (Buenos Aires Engineering University) 
 
-75.06 "Organización de datos" (Data Organization) 06/2015 quarter team exercise
+Exercise for: 75.06 "Organización de datos" (Data Organization)
 
+Date: 06/2015 
 
 ##Competition
 Team name: Grupo MAS
