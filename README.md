@@ -3,31 +3,31 @@ Solution for the Kaggle Data Science competition "Bag of Words Meets Bags of Pop
 
 https://www.kaggle.com/c/word2vec-nlp-tutorial
 
-##Description
+## Description
 By learning from a list of already classified movie reviews, the algorithm needs to predict if a new one is either positive or negative. 
 
-##Solution
+## Solution
 
-###Input
+### Input
 
-####Labeled reviews
+#### Labeled reviews
 data/labeledTrainData.tsv
 
-####Unlabeled reviews
+#### Unlabeled reviews
 data/unlabeledTrainData.tsv
 
-###Parser
+### Parser
 For both labeled and unlabeled reviews:
 * Preserve relevant text
 * Hashing trick (dimensions, wrapped words)
 
-###Training and Clasification
+### Training and Clasification
 
-####Algorithms:
+#### Algorithms:
 * Naive Bayes
 * Perceptron
 
-####Steps
+#### Steps
 For each algorithm:
 
 1) Train with labeled reviews
@@ -42,31 +42,31 @@ Then, for each unlabeled review:
 
 2) Round probability to 0 or 1 (Negative or possitive)
 
-###Output
+### Output
 output/submission.tsv
 
 
-##Programming Language
+## Programming Language
 C++
 
-##Libraries
+## Libraries
 The most important included library is Boost.
 
-##Installation
-###Windows
+## Installation
+### Windows
 Follow installation.txt
 
-###Linux
+### Linux
 Submodules init and update for root and boost folders
 
-##Context
+## Context
 FIUBA (Buenos Aires Engineering University) 
 
 Exercise for: 75.06 "Organización de datos" (Data Organization)
 
 Date: 06/2015 
 
-##Competition
+## Competition
 Team name: Grupo MAS
 
 Position: 184
